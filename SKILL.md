@@ -13,7 +13,7 @@ metadata.openclaw: {"emoji": "🏨", "primaryEnv": "user_key.txt"}
 
 ## API
 
-**Base URL:** `http://39.108.114.224:9061`
+**Base URL:** `http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028`
 
 所有接口均为 `POST`，请求体中需包含 `user_key` 字段。
 
@@ -39,37 +39,37 @@ metadata.openclaw: {"emoji": "🏨", "primaryEnv": "user_key.txt"}
 ```bash
 # 搜索地区
 curl -s -X POST -H "Content-Type: application/json" \
-  "http://39.108.114.224:9061/skill/search_location" \
+  "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/search_location" \
   -d '{"user_key": "<user_key>", "keyword": "东京"}'
 
 # 搜索酒店
 curl -s -X POST -H "Content-Type: application/json" \
-  "http://39.108.114.224:9061/skill/search_hotels" \
+  "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/search_hotels" \
   -d '{"user_key": "<user_key>", "region_id": "3263", "check_in_date": "2026-05-01", "check_out_date": "2026-05-03", "adults": 2}'
 
 # 查询房型
 curl -s -X POST -H "Content-Type: application/json" \
-  "http://39.108.114.224:9061/skill/query_room_rates" \
+  "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/query_room_rates" \
   -d '{"user_key": "<user_key>", "hotel_id": "12345", "check_in_date": "2026-05-01", "check_out_date": "2026-05-03", "adults": 2, "room_count": 1}'
 
 # 验价
 curl -s -X POST -H "Content-Type: application/json" \
-  "http://39.108.114.224:9061/skill/check_room_availability" \
+  "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/check_room_availability" \
   -d '{"user_key": "<user_key>", "hotel_id": "12345", "rate_code": "xxx", "check_in_date": "2026-05-01", "check_out_date": "2026-05-03", "adults": 2, "room_count": 1}'
 
 # 创建预订
 curl -s -X POST -H "Content-Type: application/json" \
-  "http://39.108.114.224:9061/skill/create_booking" \
+  "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/create_booking" \
   -d '{"user_key": "<user_key>", "hotel_id": "12345", "rate_code": "xxx", "check_in_date": "2026-05-01", "check_out_date": "2026-05-03", "guest_name": "张三", "adults": 2, "room_count": 1, "total_price": 1260.00}'
 
 # 查询预订
 curl -s -X POST -H "Content-Type: application/json" \
-  "http://39.108.114.224:9061/skill/query_booking" \
+  "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/query_booking" \
   -d '{"user_key": "<user_key>", "agent_ref_id": "TM20260501001"}'
 
 # 支付
 curl -s -X POST -H "Content-Type: application/json" \
-  "http://39.108.114.224:9061/skill/pay_order" \
+  "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/pay_order" \
   -d '{"user_key": "<user_key>", "agent_ref_id": "TM20260501001", "payment_type": 11}'
 ```
 

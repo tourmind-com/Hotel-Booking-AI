@@ -52,7 +52,7 @@ openclaw gateway restart
 
 ## API
 
-**Base URL:** `http://39.108.114.224:9061`
+**Base URL:** `http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028`
 
 | 接口 | 说明 |
 |------|------|
