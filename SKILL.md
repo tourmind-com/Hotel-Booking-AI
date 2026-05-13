@@ -27,6 +27,7 @@ metadata.openclaw: {"emoji": "🏨", "primaryEnv": "user_key.txt"}
 | 验价锁房 | `/skill/check_room_availability` |
 | 创建预订 | `/skill/create_booking` |
 | 查询预订 | `/skill/query_booking` |
+| 取消预订 | `/skill/cancel_booking` |
 | 发起支付 | `/skill/pay_order` |
 
 ### 响应格式
@@ -65,6 +66,11 @@ curl -s -X POST -H "Content-Type: application/json" \
 # 查询预订
 curl -s -X POST -H "Content-Type: application/json" \
   "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/query_booking" \
+  -d '{"user_key": "<user_key>", "agent_ref_id": "TM20260501001"}'
+
+# 取消预订
+curl -s -X POST -H "Content-Type: application/json" \
+  "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/cancel_booking" \
   -d '{"user_key": "<user_key>", "agent_ref_id": "TM20260501001"}'
 
 # 支付
@@ -166,6 +172,15 @@ curl -s -X POST -H "Content-Type: application/json" \
 | user_key | string | 从 `{baseDir}/user_key.txt` 读取 |
 | agent_ref_id | string | create_booking 返回的订单号 |
 
+### /skill/cancel_booking
+
+| 参数 | 类型 | 说明 |
+|------|------|------|
+| user_key | string | 从 `{baseDir}/user_key.txt` 读取 |
+| agent_ref_id | string | create_booking 返回的订单号 |
+
+返回 `data.status`、`data.cancel_fee`、`data.refund_amount`（如有）、`data.currency`。取消前必须向用户确认要取消的订单号。
+
 ### /skill/pay_order
 
 | 参数 | 类型 | 说明 |
@@ -189,6 +204,7 @@ curl -s -X POST -H "Content-Type: application/json" \
 4. 创建预订         → create_booking（无需手机号和邮箱）
 5. 发起支付         → 询问支付方式后调用 pay_order
 6. 查询订单         → query_booking（随时可查）
+7. 取消订单         → 用户明确要求取消且确认订单号后调用 cancel_booking
 ```
 
 ---
@@ -200,6 +216,7 @@ curl -s -X POST -H "Content-Type: application/json" \
 - **`total_price` 使用 `check_room_availability` 返回的价格**，不要使用 `query_room_rates` 的价格
 - **不要主动收集手机号和邮箱** — 预订流程不需要
 - **create_booking 后询问支付方式**，再调用 pay_order
+- **取消订单前必须向用户确认订单号**，再调用 cancel_booking
 - 接口调用出错时如实告知错误信息，不要编造数据或推荐替代方案
 
 > **For detailed parameter reference, region IDs, currency codes, and troubleshooting**, see [references/parameter_guide.md](references/parameter_guide.md)

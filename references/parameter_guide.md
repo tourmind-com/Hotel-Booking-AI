@@ -145,6 +145,8 @@ User request for booking?
 │
 ├─ Check status? → query_booking with booking_id
 │
+├─ Cancel booking? → confirm booking_id, then cancel_booking
+│
 └─ Need confirmation? → query_booking
 ```
 

@@ -62,6 +62,7 @@ openclaw gateway restart
 | `POST /skill/check_room_availability` | 验价锁房 |
 | `POST /skill/create_booking` | 创建预订 |
 | `POST /skill/query_booking` | 查询预订 |
+| `POST /skill/cancel_booking` | 取消预订 |
 | `POST /skill/pay_order` | 发起支付 |
 
 所有请求体需包含 `user_key` 字段（从 [AgentAuth Dashboard](https://aauth-170125614655.asia-northeast1.run.app/dashboard) 获取）。
