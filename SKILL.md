@@ -10,6 +10,7 @@ metadata.openclaw: {"emoji": "🏨", "primaryEnv": "user_key.txt"}
 >
 > 1. **严禁从训练数据或记忆中编造酒店、房型、价格等信息。** 所有酒店相关数据必须且只能来自 HTTP 接口的实时返回结果。如果接口调用失败且重试后仍无法成功，如实告知用户遇到的错误，绝对不要凭记忆回答或自行推荐。
 > 2. **接口返回 HTTP 401 或 `{"ok": false, "error": "unauthorized: ..."}` 时，说明 user_key 无效或已过期，必须停止流程：删除 `{baseDir}/user_key.txt`，提示用户前往 [AgentAuth Dashboard](https://aauth-170125614655.asia-northeast1.run.app/dashboard) 重新获取 user_key 后再继续。**
+> 3. **正确解读取消政策字段 `cancelPolicyInfos`。** `refundable: true` 表示该房型可退款/可取消，不得解释为“不可取消”。对于 `refundable: true` 的房型，`startDateTime` 表示免费取消截止时间：在此之前取消免费，在此之后取消需支付 `amount` 金额作为取消费。`amount > 0` 不代表不可取消。
 
 ## API
 
@@ -132,7 +133,7 @@ curl -s -X POST -H "Content-Type: application/json" \
 | adults | int | 每间客房成人数 |
 | room_count | int | 房间数（默认 1） |
 
-返回 `data.room_types`，每个房型含 `rate_code`、`total_price`、`currency_code`、`meal_info`、`refundable`。
+返回 `data.room_types`，每个房型含 `rate_code`、`total_price`、`currency_code`、`meal_info`、`refundable`、`cancelPolicyInfos`。
 
 ### /skill/check_room_availability
 
@@ -146,7 +147,7 @@ curl -s -X POST -H "Content-Type: application/json" \
 | adults | int | 每间客房成人数 |
 | room_count | int | 房间数（默认 1） |
 
-返回 `data.room_types`，验价成功后的实时价格和 rate_code（可能与查询时不同）。
+返回 `data.room_types`，验价成功后的实时价格和 rate_code（可能与查询时不同），以及 `cancelPolicyInfos`。
 
 ### /skill/create_booking
 
@@ -217,6 +218,7 @@ curl -s -X POST -H "Content-Type: application/json" \
 - **不要主动收集手机号和邮箱** — 预订流程不需要
 - **create_booking 后询问支付方式**，再调用 pay_order
 - **取消订单前必须向用户确认订单号**，再调用 cancel_booking
+- **解读取消政策时：`refundable: true` = 可退款/可取消；`startDateTime` = 免费取消截止时间；`amount` = 超过免费取消截止时间后的取消费，不代表不可取消**
 - 接口调用出错时如实告知错误信息，不要编造数据或推荐替代方案
 
 > **For detailed parameter reference, region IDs, currency codes, and troubleshooting**, see [references/parameter_guide.md](references/parameter_guide.md)
