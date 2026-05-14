@@ -219,6 +219,7 @@ curl -s -X POST -H "Content-Type: application/json" \
 - **create_booking 后询问支付方式**，再调用 pay_order
 - **取消订单前必须向用户确认订单号**，再调用 cancel_booking
 - **解读取消政策时：`refundable: true` = 可退款/可取消；`startDateTime` = 免费取消截止时间；`amount` = 超过免费取消截止时间后的取消费，不代表不可取消**
+- **展示多家酒店房型时，每家酒店的房型数据必须严格来自该酒店 `hotel_id` 对应的 `query_room_rates` 返回结果，禁止将其他酒店的数据混用；若某酒店返回 `room_types: None` 或 `total: 0`，只能显示"该酒店暂无可用房型"，不得用其他酒店数据填充**
 - 接口调用出错时如实告知错误信息，不要编造数据或推荐替代方案
 
 > **For detailed parameter reference, region IDs, currency codes, and troubleshooting**, see [references/parameter_guide.md](references/parameter_guide.md)
