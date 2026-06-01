@@ -1,80 +1,80 @@
 ---
 name: b2b-booking
-description: 酒店预订技能。**仅当**用户明确表达要预订酒店、查询房价、或确认已有订单时才触发（例如"帮我订酒店"、"查一下北京的酒店"、"我要预定房间"）。纯粹的旅游计划、问路、景点推荐等不触发此skill。进入工作流后，调用工具前必须先确认地点、入住日期、离店日期、人数这四项信息，缺少任何一项则先向用户询问补齐。在调用接口过程中如遇到任何错误，如实告知用户遇到了具体错误信息，不要自行推荐替代方案或编造信息。
+description: Hotel booking skill. **Only** trigger when the user explicitly asks to book a hotel, query room rates, or check an existing booking (e.g. "book me a hotel", "find hotels in Beijing", "I want to reserve a room"). Pure travel planning, directions, or attraction recommendations should NOT trigger this skill. Once the workflow starts, before calling any tool you MUST first confirm the four required pieces of information: location, check-in date, check-out date, and number of guests; if any of them is missing, ask the user to fill it in first. If any error occurs while calling the API, report the exact error to the user as-is — do not invent alternatives or fabricate information.
 metadata.openclaw: {"emoji": "🏨", "primaryEnv": "user_key.txt"}
 ---
 
 # B2B Booking Skill
 
-> **⚠️ 关键规则（必须遵守）**
+> **⚠️ Critical Rules (Must Follow)**
 >
-> 1. **严禁从训练数据或记忆中编造酒店、房型、价格等信息。** 所有酒店相关数据必须且只能来自 HTTP 接口的实时返回结果。如果接口调用失败且重试后仍无法成功，如实告知用户遇到的错误，绝对不要凭记忆回答或自行推荐。
-> 2. **接口返回 HTTP 401 或 `{"ok": false, "error": "unauthorized: ..."}` 时，说明 user_key 无效或已过期，必须停止流程：删除 `{baseDir}/user_key.txt`，提示用户前往 [AgentAuth Dashboard](https://aauth-170125614655.asia-northeast1.run.app/dashboard) 重新获取 user_key 后再继续。**
-> 3. **正确解读取消政策字段 `cancelPolicyInfos`。** `refundable: true` 表示该房型可退款/可取消，不得解释为“不可取消”。对于 `refundable: true` 的房型，`startDateTime` 表示免费取消截止时间：在此之前取消免费，在此之后取消需支付 `amount` 金额作为取消费。`amount > 0` 不代表不可取消。
+> 1. **Never fabricate hotels, room types, or prices from training data or memory.** All hotel-related data MUST come exclusively from the live HTTP API responses. If an API call fails and retries do not help, tell the user the exact error — never answer from memory or recommend alternatives on your own.
+> 2. **When the API returns HTTP 401 or `{"ok": false, "error": "unauthorized: ..."}`, the user_key is invalid or expired. Stop the workflow immediately: delete `{baseDir}/user_key.txt` and ask the user to visit the [AgentAuth Dashboard](https://aauth-170125614655.asia-northeast1.run.app/dashboard) to obtain a new user_key before continuing.**
+> 3. **Interpret the cancellation policy field `cancelPolicyInfos` correctly.** `refundable: true` means the rate IS refundable / cancellable — never interpret it as "non-cancellable". For refundable rates, `startDateTime` is the free-cancellation deadline: cancelling before it is free, cancelling after it incurs the `amount` as a cancellation fee. `amount > 0` does NOT mean the rate is non-cancellable.
 
 ## API
 
 **Base URL:** `http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028`
 
-所有接口均为 `POST`，请求体中需包含 `user_key` 字段。
+All endpoints are `POST` and require a `user_key` field in the request body.
 
-### 接口列表
+### Endpoint List
 
-| 功能 | Path |
-|------|------|
-| 搜索地区/酒店 | `/skill/search_location` |
-| 搜索酒店列表 | `/skill/search_hotels` |
-| 查询房型和价格 | `/skill/query_room_rates` |
-| 验价锁房 | `/skill/check_room_availability` |
-| 创建预订 | `/skill/create_booking` |
-| 查询预订 | `/skill/query_booking` |
-| 取消预订 | `/skill/cancel_booking` |
-| 发起支付 | `/skill/pay_order` |
+| Function | Path |
+|----------|------|
+| Search regions / hotels | `/skill/search_location` |
+| Search hotel list | `/skill/search_hotels` |
+| Query room types and rates | `/skill/query_room_rates` |
+| Verify price & lock room | `/skill/check_room_availability` |
+| Create booking | `/skill/create_booking` |
+| Query booking | `/skill/query_booking` |
+| Cancel booking | `/skill/cancel_booking` |
+| Initiate payment | `/skill/pay_order` |
 
-### 响应格式
+### Response Format
 
-成功：`{"ok": true, "data": {...}}`  
-失败：`{"ok": false, "error": "错误描述"}`
+Success: `{"ok": true, "data": {...}}`  
+Failure: `{"ok": false, "error": "error description"}`
 
-### 调用方式（curl 示例）
+### Calling Examples (curl)
 
 ```bash
-# 搜索地区
+# Search regions
 curl -s -X POST -H "Content-Type: application/json" \
   "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/search_location" \
-  -d '{"user_key": "<user_key>", "keyword": "东京"}'
+  -d '{"user_key": "<user_key>", "keyword": "Tokyo"}'
 
-# 搜索酒店
+# Search hotels
 curl -s -X POST -H "Content-Type: application/json" \
   "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/search_hotels" \
   -d '{"user_key": "<user_key>", "region_id": "3263", "check_in_date": "2026-05-01", "check_out_date": "2026-05-03", "adults": 2}'
 
-# 查询房型
+# Query room types
 curl -s -X POST -H "Content-Type: application/json" \
   "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/query_room_rates" \
   -d '{"user_key": "<user_key>", "hotel_id": "12345", "check_in_date": "2026-05-01", "check_out_date": "2026-05-03", "adults": 2, "room_count": 1}'
 
-# 验价
+# Verify price
 curl -s -X POST -H "Content-Type: application/json" \
   "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/check_room_availability" \
   -d '{"user_key": "<user_key>", "hotel_id": "12345", "rate_code": "xxx", "check_in_date": "2026-05-01", "check_out_date": "2026-05-03", "adults": 2, "room_count": 1}'
 
-# 创建预订
+# Create booking
 curl -s -X POST -H "Content-Type: application/json" \
   "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/create_booking" \
-  -d '{"user_key": "<user_key>", "hotel_id": "12345", "rate_code": "xxx", "check_in_date": "2026-05-01", "check_out_date": "2026-05-03", "guest_name": "张三", "adults": 2, "room_count": 1, "total_price": 1260.00}'
+  -d '{"user_key": "<user_key>", "hotel_id": "12345", "rate_code": "xxx", "check_in_date": "2026-05-01", "check_out_date": "2026-05-03", "guest_name": "John Smith", "adults": 2, "room_count": 1, "total_price": 1260.00}'
 
-# 查询预订
+# Query booking
 curl -s -X POST -H "Content-Type: application/json" \
   "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/query_booking" \
   -d '{"user_key": "<user_key>", "agent_ref_id": "TM20260501001"}'
 
-# 取消预订
+# Cancel booking
 curl -s -X POST -H "Content-Type: application/json" \
   "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/cancel_booking" \
   -d '{"user_key": "<user_key>", "agent_ref_id": "TM20260501001"}'
 
-# 支付
+# Pay
 curl -s -X POST -H "Content-Type: application/json" \
   "http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028/skill/pay_order" \
   -d '{"user_key": "<user_key>", "agent_ref_id": "TM20260501001", "payment_type": 11}'
@@ -84,142 +84,142 @@ curl -s -X POST -H "Content-Type: application/json" \
 
 ## Setup
 
-调用任何接口前，必须先完成用户身份验证。
+Before calling any API, the user must be authenticated.
 
 ### Step 1 — User Key
 
-1. 读取 `{baseDir}/user_key.txt`
-2. 如果文件**不存在或为空** — 不要调用任何接口，告知用户：
-   > "在开始之前，需要先验证你的身份。请前往 https://aauth-170125614655.asia-northeast1.run.app/dashboard 用 Google 账号登录，复制你的 `user_key`（格式：`uk_xxxxxxxx`），然后告诉我。"
-   用户提供后保存到 `{baseDir}/user_key.txt`，然后继续。
-3. 如果文件**存在且有内容** — 直接使用，不再询问用户。
-4. 如果接口返回 401 或 error 包含 `unauthorized` — 删除 `{baseDir}/user_key.txt`，重新执行第 2 步。
+1. Read `{baseDir}/user_key.txt`.
+2. If the file **does not exist or is empty** — do NOT call any API. Tell the user:
+   > "Before we start, I need to verify your identity. Please visit https://aauth-170125614655.asia-northeast1.run.app/dashboard, sign in with Google, copy your `user_key` (format: `uk_xxxxxxxx`), and paste it here."
+   When the user provides it, save it to `{baseDir}/user_key.txt` and continue.
+3. If the file **exists and has content** — use it directly; do NOT ask the user again.
+4. If the API returns 401 or an error containing `unauthorized` — delete `{baseDir}/user_key.txt` and repeat step 2.
 
 ---
 
-## 接口参数说明
+## Endpoint Parameters
 
 ### /skill/search_location
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| user_key | string | 从 `{baseDir}/user_key.txt` 读取 |
-| keyword | string | 搜索关键词（城市名、地标、酒店名等） |
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| user_key | string | Read from `{baseDir}/user_key.txt` |
+| keyword | string | Search keyword (city name, landmark, hotel name, etc.) |
 
-返回 `data.regions`（地区列表，含 `region_id`）和 `data.hotels`（酒店列表，含 `hotel_id`）。
+Returns `data.regions` (region list with `region_id`) and `data.hotels` (hotel list with `hotel_id`).
 
 ### /skill/search_hotels
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| user_key | string | 从 `{baseDir}/user_key.txt` 读取 |
-| region_id | string | 地区 ID（必须传字符串，如 `"3263"`） |
-| check_in_date | string | 入住日期 YYYY-MM-DD |
-| check_out_date | string | 离店日期 YYYY-MM-DD |
-| adults | int | 每间客房成人数 |
-| lowest_price | int | 最低价格（CNY，可选） |
-| highest_price | int | 最高价格（CNY，可选） |
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| user_key | string | Read from `{baseDir}/user_key.txt` |
+| region_id | string | Region ID (must be passed as a string, e.g. `"3263"`) |
+| check_in_date | string | Check-in date in YYYY-MM-DD |
+| check_out_date | string | Check-out date in YYYY-MM-DD |
+| adults | int | Number of adults per room |
+| lowest_price | int | Minimum price (CNY, optional) |
+| highest_price | int | Maximum price (CNY, optional) |
 
-返回 `data.hotels`，最多 3 家价格最低的酒店。
+Returns `data.hotels` — at most the 3 cheapest hotels.
 
 ### /skill/query_room_rates
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| user_key | string | 从 `{baseDir}/user_key.txt` 读取 |
-| hotel_id | string | 酒店 ID |
-| check_in_date | string | 入住日期 |
-| check_out_date | string | 离店日期 |
-| adults | int | 每间客房成人数 |
-| room_count | int | 房间数（默认 1） |
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| user_key | string | Read from `{baseDir}/user_key.txt` |
+| hotel_id | string | Hotel ID |
+| check_in_date | string | Check-in date |
+| check_out_date | string | Check-out date |
+| adults | int | Number of adults per room |
+| room_count | int | Number of rooms (default 1) |
 
-返回 `data.room_types`，每个房型含 `rate_code`、`total_price`、`currency_code`、`meal_info`、`refundable`、`cancelPolicyInfos`。
+Returns `data.room_types`. Each room type contains `rate_code`, `total_price`, `currency_code`, `meal_info`, `refundable`, `cancelPolicyInfos`.
 
 ### /skill/check_room_availability
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| user_key | string | 从 `{baseDir}/user_key.txt` 读取 |
-| hotel_id | string | 酒店 ID |
-| rate_code | string | 来自 query_room_rates 的 rate_code |
-| check_in_date | string | 入住日期 |
-| check_out_date | string | 离店日期 |
-| adults | int | 每间客房成人数 |
-| room_count | int | 房间数（默认 1） |
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| user_key | string | Read from `{baseDir}/user_key.txt` |
+| hotel_id | string | Hotel ID |
+| rate_code | string | The `rate_code` returned by query_room_rates |
+| check_in_date | string | Check-in date |
+| check_out_date | string | Check-out date |
+| adults | int | Number of adults per room |
+| room_count | int | Number of rooms (default 1) |
 
-返回 `data.room_types`，验价成功后的实时价格和 rate_code（可能与查询时不同），以及 `cancelPolicyInfos`。
+Returns `data.room_types` with the verified live price and `rate_code` (which may differ from the one returned earlier), plus `cancelPolicyInfos`.
 
 ### /skill/create_booking
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| user_key | string | 从 `{baseDir}/user_key.txt` 读取 |
-| hotel_id | string | 酒店 ID |
-| rate_code | string | 来自 check_room_availability 的 rate_code |
-| check_in_date | string | 入住日期 |
-| check_out_date | string | 离店日期 |
-| guest_name | string | 入住人姓名（系统自动解析中英文） |
-| adults | int | 每间客房成人数 |
-| room_count | int | 房间数（默认 1） |
-| currency | string | 货币，默认 CNY |
-| total_price | float | check_room_availability 返回的总价 |
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| user_key | string | Read from `{baseDir}/user_key.txt` |
+| hotel_id | string | Hotel ID |
+| rate_code | string | The `rate_code` returned by check_room_availability |
+| check_in_date | string | Check-in date |
+| check_out_date | string | Check-out date |
+| guest_name | string | Guest name (the system parses Chinese / English names automatically) |
+| adults | int | Number of adults per room |
+| room_count | int | Number of rooms (default 1) |
+| currency | string | Currency, default CNY |
+| total_price | float | Total price returned by check_room_availability |
 
-返回 `data.agent_ref_id`（订单号）。
+Returns `data.agent_ref_id` (booking reference).
 
 ### /skill/query_booking
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| user_key | string | 从 `{baseDir}/user_key.txt` 读取 |
-| agent_ref_id | string | create_booking 返回的订单号 |
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| user_key | string | Read from `{baseDir}/user_key.txt` |
+| agent_ref_id | string | Booking reference returned by create_booking |
 
 ### /skill/cancel_booking
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| user_key | string | 从 `{baseDir}/user_key.txt` 读取 |
-| agent_ref_id | string | create_booking 返回的订单号 |
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| user_key | string | Read from `{baseDir}/user_key.txt` |
+| agent_ref_id | string | Booking reference returned by create_booking |
 
-返回 `data.status`、`data.cancel_fee`、`data.refund_amount`（如有）、`data.currency`。取消前必须向用户确认要取消的订单号。
+Returns `data.status`, `data.cancel_fee`, `data.refund_amount` (if any), `data.currency`. Always confirm the booking reference with the user before cancelling.
 
 ### /skill/pay_order
 
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| user_key | string | 从 `{baseDir}/user_key.txt` 读取 |
-| agent_ref_id | string | 订单号 |
-| payment_type | int | `11` = 微信支付，`12` = 支付宝 |
-| return_url | string | 支付完成跳转地址（可选） |
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| user_key | string | Read from `{baseDir}/user_key.txt` |
+| agent_ref_id | string | Booking reference |
+| payment_type | int | `11` = WeChat Pay, `12` = Alipay |
+| return_url | string | Redirect URL after payment (optional) |
 
-返回 `data.pay_url`，将链接分享给用户完成支付。
-
----
-
-## 预订流程
-
-```
-0. 搜索地区（如需要）→ search_location 获取 region_id
-1. 搜索酒店         → search_hotels
-2. 查询房型价格     → query_room_rates
-3. 验价锁房         → check_room_availability
-4. 创建预订         → create_booking（无需手机号和邮箱）
-5. 发起支付         → 询问支付方式后调用 pay_order
-6. 查询订单         → query_booking（随时可查）
-7. 取消订单         → 用户明确要求取消且确认订单号后调用 cancel_booking
-```
+Returns `data.pay_url` — share this link with the user to complete the payment.
 
 ---
 
-## 注意事项
+## Booking Workflow
 
-- **所有日期格式必须是 `YYYY-MM-DD`**
-- **`region_id`、`hotel_id` 必须以字符串传入**（如 `"3263"`，不是 `3263`）
-- **`total_price` 使用 `check_room_availability` 返回的价格**，不要使用 `query_room_rates` 的价格
-- **不要主动收集手机号和邮箱** — 预订流程不需要
-- **create_booking 后询问支付方式**，再调用 pay_order
-- **取消订单前必须向用户确认订单号**，再调用 cancel_booking
-- **解读取消政策时：`refundable: true` = 可退款/可取消；`startDateTime` = 免费取消截止时间；`amount` = 超过免费取消截止时间后的取消费，不代表不可取消**
-- **展示多家酒店房型时，每家酒店的房型数据必须严格来自该酒店 `hotel_id` 对应的 `query_room_rates` 返回结果，禁止将其他酒店的数据混用；若某酒店返回 `room_types: None` 或 `total: 0`，只能显示"该酒店暂无可用房型"，不得用其他酒店数据填充**
-- 接口调用出错时如实告知错误信息，不要编造数据或推荐替代方案
+```
+0. Search region (if needed)  → search_location to get region_id
+1. Search hotels              → search_hotels
+2. Query room rates           → query_room_rates
+3. Verify price & lock room   → check_room_availability
+4. Create booking             → create_booking (no phone or email required)
+5. Initiate payment           → ask the user for payment method, then pay_order
+6. Query booking              → query_booking (any time)
+7. Cancel booking             → only after the user explicitly asks AND confirms the booking reference, then cancel_booking
+```
+
+---
+
+## Notes
+
+- **All dates must be in `YYYY-MM-DD` format.**
+- **`region_id` and `hotel_id` MUST be passed as strings** (e.g. `"3263"`, not `3263`).
+- **`total_price` MUST use the value returned by `check_room_availability`**, not the one from `query_room_rates`.
+- **Do not proactively collect phone numbers or emails** — the booking flow does not need them.
+- **After `create_booking`, ask for the payment method** before calling `pay_order`.
+- **Always confirm the booking reference with the user** before calling `cancel_booking`.
+- **Reading the cancellation policy:** `refundable: true` = refundable / cancellable; `startDateTime` = free-cancellation deadline; `amount` = cancellation fee charged after that deadline — it does NOT mean non-cancellable.
+- **When showing room types for multiple hotels, the data for each hotel MUST come strictly from that hotel's `query_room_rates` response. Never mix data across hotels. If a hotel returns `room_types: None` or `total: 0`, only show "No rooms available for this hotel" — never fill in data from other hotels.**
+- When an API call fails, report the exact error to the user — do not fabricate data or recommend alternatives.
 
 > **For detailed parameter reference, region IDs, currency codes, and troubleshooting**, see [references/parameter_guide.md](references/parameter_guide.md)

@@ -3,26 +3,26 @@
 ## Region IDs (HTS Regions)
 
 **China:**
-- `569` - Beijing (北京)
-- `2862` - Shanghai (上海)
-- `765` - Zhengzhou (郑州)
-- `794` - Chongqing (重庆)
-- `3045` - Shenzhen (深圳)
-- `1328` - Hangzhou (杭州)
-- `3489` - Wuhan (武汉)
+- `569` - Beijing
+- `2862` - Shanghai
+- `765` - Zhengzhou
+- `794` - Chongqing
+- `3045` - Shenzhen
+- `1328` - Hangzhou
+- `3489` - Wuhan
 
 **Asia:**
-- `174` - Singapore (新加坡)
-- `575` - Bangkok (曼谷)
-- `2446` - Osaka (大阪)
-- `3263` - Tokyo (东京)
-- `20994` - Bali (巴厘岛)
+- `174` - Singapore
+- `575` - Bangkok
+- `2446` - Osaka
+- `3263` - Tokyo
+- `20994` - Bali
 
 **Europe:**
-- `1918` - London (伦敦)
-- `2481` - Paris (巴黎)
-- `2736` - Roma (罗马)
-- `514` - Berlin (柏林)
+- `1918` - London
+- `2481` - Paris
+- `2736` - Roma
+- `514` - Berlin
 
 *Note: Region IDs are HTS-specific identifiers. Use `/static/v2/region/fuzzy?keyword=xxx` API to search for more regions.*
 
@@ -80,9 +80,9 @@ The system automatically parses full names into first/last components:
 
 ✅ **Supported formats:**
 - "John Smith" → first: "John", last: "Smith"
-- "李明" (Chinese) → Auto-converts to pinyin for booking
+- "Li Ming" (Chinese name) → Auto-converts to pinyin for booking
 - "Jean-Claude Van Damme" → Handles hyphenated names
-- "王 宏伟" → Handles space-separated Chinese names
+- "Wang Hongwei" → Handles space-separated Chinese names
 
 ⚠️ **Best practice:**
 - Provide full legal name as it appears on ID
@@ -108,13 +108,13 @@ Common error responses and meanings:
 
 ## Order Status Reference
 
-| Status | Chinese | Meaning |
-|--------|---------|---------|
-| `UNPAID` | 待支付 | Booking created, payment not yet made |
-| `PENDING` | 已支付，待酒店确认 | Payment received, waiting for hotel to confirm |
-| `CONFIRMED` | 已确认 | Hotel confirmed, booking is guaranteed |
-| `CANCELLED` | 已取消 | Booking has been cancelled |
-| `CONFIRM_FAILED` | 确认失败 | Hotel confirmation failed, contact support |
+| Status | Meaning |
+|--------|---------|
+| `UNPAID` | Booking created, payment not yet made |
+| `PENDING` | Payment received, waiting for hotel to confirm |
+| `CONFIRMED` | Hotel confirmed, booking is guaranteed |
+| `CANCELLED` | Booking has been cancelled |
+| `CONFIRM_FAILED` | Hotel confirmation failed, contact support |
 
 > **Important**: `PENDING` means the payment was successful and the hotel is processing confirmation — do NOT tell the user to pay again.
 

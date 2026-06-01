@@ -1,46 +1,44 @@
 # Hotel Booking AI — OpenClaw Skill
 
-B2B 酒店预订技能，支持搜索酒店、查询房型、验价锁房、创建预订、发起支付的完整工作流。
+A B2B hotel booking skill that supports the full workflow: search hotels, query room rates, verify price & lock room, create booking, and initiate payment.
 
-## 功能
+## Features
 
-- **搜索地区/酒店**：按城市名、地标、酒店名模糊搜索
-- **搜索酒店列表**：按地区和日期查询最低价酒店
-- **查询房型价格**：获取指定酒店的全部房型和实时价格
-- **验价锁房**：锁定房价，确保预订前价格有效
-- **创建预订**：提交订单，支持中英文姓名自动解析
-- **查询预订**：随时查看订单状态和确认号
-- **发起支付**：支持微信支付和支付宝
+- **Search regions / hotels** — fuzzy search by city name, landmark, or hotel name
+- **Search hotel list** — find the cheapest hotels by region and dates
+- **Query room rates** — get all room types and live prices for a given hotel
+- **Verify price & lock room** — lock in the rate to make sure it is still valid before booking
+- **Create booking** — submit the order; Chinese / English names are parsed automatically
+- **Query booking** — check the order status and confirmation number any time
+- **Initiate payment** — supports WeChat Pay and Alipay
 
-## 目录结构
+## Directory Structure
 
 ```
-├── SKILL.md              # Skill 主文件（OpenClaw 加载）
-├── README.md             # 本文档
-├── EVAL_GUIDE.md         # 测试评估指南
-├── TEST_REPORT.md        # 测试报告
+├── SKILL.md                 # Main skill file (loaded by OpenClaw)
+├── README.md                # This document
 ├── evals/
-│   └── evals.json        # 测试用例
+│   └── evals.json           # Test cases
 ├── references/
-│   └── parameter_guide.md  # 参数参考（region_id、货币代码等）
+│   └── parameter_guide.md   # Parameter reference (region_id, currency codes, etc.)
 └── scripts/
-    └── validate_booking.py # 接口测试脚本
+    └── validate_booking.py  # Response validation script
 ```
 
-## 快速部署
+## Quick Deploy
 
-### 1. 启动 Skill HTTP Server
+### 1. Start the Skill HTTP Server
 
 ```bash
 go build -o chls-skill ./mcp/cmd/
 nohup ./chls-skill -port :9061 > chls-skill.log 2>&1 &
 ```
 
-所需环境变量与主业务服务相同（数据库、RPC 地址等）。
+The required environment variables are the same as the main service (database, RPC endpoints, etc.).
 
-### 2. 安装 Skill
+### 2. Install the Skill
 
-将 `SKILL.md` 复制到 OpenClaw 技能目录，重启网关：
+Copy `SKILL.md` to the OpenClaw skills directory and restart the gateway:
 
 ```bash
 mkdir -p ~/.openclaw/skills/b2b-booking
@@ -48,54 +46,54 @@ cp SKILL.md ~/.openclaw/skills/b2b-booking/
 openclaw gateway restart
 ```
 
-无需在 `openclaw.json` 中配置任何 MCP server，Skill 直接通过 HTTP 调用接口。
+No MCP server needs to be configured in `openclaw.json` — the skill calls the HTTP API directly.
 
 ## API
 
 **Base URL:** `http://nlb-3psfnp4wzcgnlw0fe0.cn-shenzhen.nlb.aliyuncsslb.com:19028`
 
-| 接口 | 说明 |
-|------|------|
-| `POST /skill/search_location` | 搜索地区或酒店 |
-| `POST /skill/search_hotels` | 搜索酒店列表 |
-| `POST /skill/query_room_rates` | 查询房型和价格 |
-| `POST /skill/check_room_availability` | 验价锁房 |
-| `POST /skill/create_booking` | 创建预订 |
-| `POST /skill/query_booking` | 查询预订 |
-| `POST /skill/cancel_booking` | 取消预订 |
-| `POST /skill/pay_order` | 发起支付 |
+| Endpoint | Description |
+|----------|-------------|
+| `POST /skill/search_location` | Search regions or hotels |
+| `POST /skill/search_hotels` | Search hotel list |
+| `POST /skill/query_room_rates` | Query room types and rates |
+| `POST /skill/check_room_availability` | Verify price & lock room |
+| `POST /skill/create_booking` | Create booking |
+| `POST /skill/query_booking` | Query booking |
+| `POST /skill/cancel_booking` | Cancel booking |
+| `POST /skill/pay_order` | Initiate payment |
 
-所有请求体需包含 `user_key` 字段（从 [AgentAuth Dashboard](https://aauth-170125614655.asia-northeast1.run.app/dashboard) 获取）。
+Every request body must contain a `user_key` field (obtainable from the [AgentAuth Dashboard](https://aauth-170125614655.asia-northeast1.run.app/dashboard)).
 
-## 使用示例
+## Example Conversation
 
 ```
-用户：帮我订一下东京的酒店，4月28日入住，4月30日离店，2人
+User: Book me a hotel in Tokyo, check-in Apr 28, check-out Apr 30, 2 people.
 
-机器人：好的，我来帮您搜索东京的酒店。
-       找到以下 3 家酒店：
-       1. 东京希尔顿酒店 — ¥1,280/晚
-       2. 新宿华盛顿酒店 — ¥850/晚
-       3. 东京皇家公园酒店 — ¥720/晚
-       请问您选择哪家？
+Bot:  Sure, let me search hotels in Tokyo.
+      Found 3 hotels:
+      1. Hilton Tokyo            — ¥1,280 / night
+      2. Shinjuku Washington     — ¥850   / night
+      3. Tokyo Imperial Park     — ¥720   / night
+      Which one would you like?
 
-用户：第2家，标准间
+User: The 2nd one, standard room.
 
-机器人：已验价，标准大床房 ¥850/晚，2晚共 ¥1,700。
-       请提供入住人姓名。
+Bot:  Price verified — Standard Double, ¥850 / night, 2 nights total ¥1,700.
+      Please provide the guest name.
 
-用户：张三
+User: John Smith
 
-机器人：订单创建成功！订单号：TM20260428001
-       请选择支付方式：微信支付 或 支付宝
+Bot:  Booking created! Reference: TM20260428001
+      Choose a payment method: WeChat Pay or Alipay?
 
-用户：微信支付
+User: WeChat Pay
 
-机器人：已发起微信支付，请点击链接完成支付：https://...
+Bot:  WeChat payment initiated. Click the link to pay: https://...
 ```
 
-## 参数参考
+## Parameter Reference
 
-常用 region_id 见 [references/parameter_guide.md](references/parameter_guide.md)。
+Common region IDs are listed in [references/parameter_guide.md](references/parameter_guide.md).
 
-常用地区：北京=569，上海=2862，杭州=1328，深圳=3045，大阪=2446，东京=3263，曼谷=575
+Examples: Beijing=569, Shanghai=2862, Hangzhou=1328, Shenzhen=3045, Osaka=2446, Tokyo=3263, Bangkok=575.
