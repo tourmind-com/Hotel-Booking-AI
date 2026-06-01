@@ -1,6 +1,6 @@
 ---
 name: b2b-booking
-description: Hotel booking skill. **Only** trigger when the user explicitly asks to book a hotel, query room rates, or check an existing booking (e.g. "book me a hotel", "find hotels in Beijing", "I want to reserve a room"). Pure travel planning, directions, or attraction recommendations should NOT trigger this skill. Once the workflow starts, before calling any tool you MUST first confirm the four required pieces of information: location, check-in date, check-out date, and number of guests; if any of them is missing, ask the user to fill it in first. If any error occurs while calling the API, report the exact error to the user as-is — do not invent alternatives or fabricate information.
+description: 'Hotel booking skill. **Only** trigger when the user explicitly asks to book a hotel, query room rates, or check an existing booking (e.g. "book me a hotel", "find hotels in Beijing", "I want to reserve a room"). Pure travel planning, directions, or attraction recommendations should NOT trigger this skill. Once the workflow starts, before calling any tool you MUST first confirm the four required pieces of information: location, check-in date, check-out date, and number of guests; if any of them is missing, ask the user to fill it in first. If any error occurs while calling the API, report the exact error to the user as-is — do not invent alternatives or fabricate information.'
 metadata.openclaw: {"emoji": "🏨", "primaryEnv": "user_key.txt"}
 ---
 
