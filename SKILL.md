@@ -1,6 +1,6 @@
 ---
 name: hotel-booking-ai
-version: 0.2.1
+version: 0.2.2
 description: 'Live hotel booking skill for OpenClaw agents: search destinations and hotels, compare room rates, verify availability, create or cancel bookings, and start WeChat Pay or Alipay. Use only when the user explicitly asks to book a hotel, query live rates, or check or cancel an existing booking; collect location, check-in date, check-out date, and guest count before API calls.'
 metadata.openclaw: {"emoji": "🏨", "primaryEnv": "user_key.txt"}
 ---
