@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Booking validation script for B2B Booking Skill
-Validates that booking creation returns expected fields
+Booking validation script for Hotel Booking AI.
+Validates that booking creation returns expected fields.
 """
 
 import json

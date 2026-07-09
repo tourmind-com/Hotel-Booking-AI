@@ -1,6 +1,8 @@
 # Hotel Booking AI — OpenClaw Skill
 
-A B2B hotel booking skill that supports the full workflow: search hotels, query room rates, verify price & lock room, create booking, and initiate payment.
+Hotel Booking AI is an OpenClaw skill for live hotel search and booking through TourMind's B2B hotel API.
+
+It helps agents search destinations and hotels, compare real-time room rates, verify availability, create or cancel bookings, query order status, and initiate WeChat Pay or Alipay payments. Use it only for explicit hotel booking, live rate, booking status, cancellation, or payment requests.
 
 ## Features
 
@@ -10,6 +12,7 @@ A B2B hotel booking skill that supports the full workflow: search hotels, query 
 - **Verify price & lock room** — lock in the rate to make sure it is still valid before booking
 - **Create booking** — submit the order; Chinese / English names are parsed automatically
 - **Query booking** — check the order status and confirmation number any time
+- **Cancel booking** — cancel an existing booking after user confirmation
 - **Initiate payment** — supports WeChat Pay and Alipay
 
 ## Directory Structure
@@ -24,6 +27,14 @@ A B2B hotel booking skill that supports the full workflow: search hotels, query 
 └── scripts/
     └── validate_booking.py  # Response validation script
 ```
+
+## ClawHub Install
+
+```bash
+openclaw skills install @tourmind/hotel-booking-ai
+```
+
+The published ClawHub slug is `hotel-booking-ai`.
 
 ## Quick Deploy
 
@@ -41,8 +52,8 @@ The required environment variables are the same as the main service (database, R
 Copy `SKILL.md` to the OpenClaw skills directory and restart the gateway:
 
 ```bash
-mkdir -p ~/.openclaw/skills/b2b-booking
-cp SKILL.md ~/.openclaw/skills/b2b-booking/
+mkdir -p ~/.openclaw/skills/hotel-booking-ai
+cp SKILL.md ~/.openclaw/skills/hotel-booking-ai/
 openclaw gateway restart
 ```
 

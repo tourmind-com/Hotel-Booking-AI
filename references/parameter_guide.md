@@ -1,4 +1,4 @@
-# B2B Booking Skill - Parameter Reference
+# Hotel Booking AI - Parameter Reference
 
 ## Region IDs (HTS Regions)
 

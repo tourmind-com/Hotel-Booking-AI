@@ -1,10 +1,19 @@
 ---
-name: b2b-booking
-description: 'Hotel booking skill. **Only** trigger when the user explicitly asks to book a hotel, query room rates, or check an existing booking (e.g. "book me a hotel", "find hotels in Beijing", "I want to reserve a room"). Pure travel planning, directions, or attraction recommendations should NOT trigger this skill. Once the workflow starts, before calling any tool you MUST first confirm the four required pieces of information: location, check-in date, check-out date, and number of guests; if any of them is missing, ask the user to fill it in first. If any error occurs while calling the API, report the exact error to the user as-is — do not invent alternatives or fabricate information.'
+name: hotel-booking-ai
+version: 0.2.1
+description: 'Live hotel booking skill for OpenClaw agents: search destinations and hotels, compare room rates, verify availability, create or cancel bookings, and start WeChat Pay or Alipay. Use only when the user explicitly asks to book a hotel, query live rates, or check or cancel an existing booking; collect location, check-in date, check-out date, and guest count before API calls.'
 metadata.openclaw: {"emoji": "🏨", "primaryEnv": "user_key.txt"}
 ---
 
-# B2B Booking Skill
+# Hotel Booking AI
+
+A B2B hotel booking skill for live hotel search, room-rate comparison, availability checks, booking creation, order lookup, cancellation, and payment initiation.
+
+## When to Use
+
+Use this skill only when the user explicitly asks to book a hotel, query live room rates, check an existing booking, cancel a booking, or start payment for a booking.
+
+Do not trigger it for general travel planning, directions, itinerary ideas, or attraction recommendations. Before any API call, confirm the four required inputs: location, check-in date, check-out date, and number of guests.
 
 > **⚠️ Critical Rules (Must Follow)**
 >
