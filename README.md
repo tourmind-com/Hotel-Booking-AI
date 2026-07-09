@@ -1,8 +1,8 @@
-# Hotel Booking AI — OpenClaw Skill
+# Hotel Booking AI
 
-Hotel Booking AI is an OpenClaw skill for live hotel search and booking through TourMind's B2B hotel API.
+Hotel Booking AI helps users book hotels with live prices and availability.
 
-It helps agents search destinations and hotels, compare real-time room rates, verify availability, create or cancel bookings, query order status, and initiate WeChat Pay or Alipay payments. Use it only for explicit hotel booking, live rate, booking status, cancellation, or payment requests.
+Search destinations or hotel names, compare real-time room rates, verify rooms before booking, create reservations, check or cancel orders, and pay with WeChat Pay or Alipay. Use it only for explicit hotel booking, room-rate, booking-status, cancellation, or payment requests.
 
 ## Features
 
@@ -18,7 +18,7 @@ It helps agents search destinations and hotels, compare real-time room rates, ve
 ## Directory Structure
 
 ```
-├── SKILL.md                 # Main skill file (loaded by OpenClaw)
+├── SKILL.md                 # Main skill file
 ├── README.md                # This document
 ├── evals/
 │   └── evals.json           # Test cases
@@ -47,9 +47,9 @@ nohup ./chls-skill -port :9061 > chls-skill.log 2>&1 &
 
 The required environment variables are the same as the main service (database, RPC endpoints, etc.).
 
-### 2. Install the Skill
+### 2. Install the Skill Locally
 
-Copy `SKILL.md` to the OpenClaw skills directory and restart the gateway:
+Copy `SKILL.md` to the local skills directory and restart the gateway:
 
 ```bash
 mkdir -p ~/.openclaw/skills/hotel-booking-ai

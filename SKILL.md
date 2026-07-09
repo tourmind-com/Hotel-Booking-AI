@@ -1,17 +1,17 @@
 ---
 name: hotel-booking-ai
-version: 0.2.3
-description: 'Live hotel booking skill for OpenClaw agents: search destinations and hotels, compare room rates, verify availability, create or cancel bookings, and start WeChat Pay or Alipay. Use only when the user explicitly asks to book a hotel, query live rates, or check or cancel an existing booking; collect location, check-in date, check-out date, and guest count before API calls.'
+version: 0.2.4
+description: 'Book hotels with live prices and availability. Search destinations or hotel names, compare room rates, verify rooms before booking, create reservations, check or cancel orders, and pay with WeChat Pay or Alipay. Use only when the user explicitly asks to book a hotel, query room rates, manage a booking, or start payment; collect location, check-in date, check-out date, and guest count before API calls.'
 metadata.openclaw: {"emoji": "🏨", "primaryEnv": "user_key.txt"}
 ---
 
 # Hotel Booking AI
 
-A B2B hotel booking skill for live hotel search, room-rate comparison, availability checks, booking creation, order lookup, cancellation, and payment initiation.
+A hotel booking assistant for live hotel search, room-rate comparison, availability checks, reservations, order lookup, cancellation, and payment.
 
 ## When to Use
 
-Use this skill only when the user explicitly asks to book a hotel, query live room rates, check an existing booking, cancel a booking, or start payment for a booking.
+Use this skill only when the user explicitly asks to book a hotel, query room rates, check an existing booking, cancel a booking, or start payment for a booking.
 
 Do not trigger it for general travel planning, directions, itinerary ideas, or attraction recommendations. Before any API call, confirm the four required inputs: location, check-in date, check-out date, and number of guests.
 
