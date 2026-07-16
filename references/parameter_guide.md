@@ -122,14 +122,16 @@ Common error responses and meanings:
 
 ## Authentication
 
-This skill uses AgentAuth for identity verification. Your `user_key` is stored locally in `{baseDir}/user_key.txt` and passed automatically as the `user_key` parameter on every tool call.
+Hotel search, static detail, room-rate query, and availability check are public and must not send `user_key`. AgentAuth is required only for `create_booking`, `query_booking`, `cancel_booking`, and `pay_order`.
 
 **Get your user key:**
 1. Visit https://aauth-170125614655.asia-northeast1.run.app/dashboard
 2. Log in with Google
 3. Copy your `user_key` (format: `uk_xxxxxxxx`)
 
-On first use, the skill will prompt you to enter it. It is then saved for all future sessions.
+Prompt for the key only when the user is ready to create or operate an order. Store it in `{baseDir}/user_key.txt` for later order operations.
+
+When stay parameters are omitted from public search, rate, or availability requests, the server defaults to tomorrow check-in, the following day check-out, one adult, and one room. Explicit user requirements override these defaults.
 
 ---
 
@@ -137,10 +139,10 @@ On first use, the skill will prompt you to enter it. It is then saved for all fu
 
 ```
 User request for booking?
-├─ Search? → search_hotels with region + dates
+├─ Search anonymously → search_hotels (stay fields optional)
 │  └─ Got hotel → query_room_rates with hotel_id
 │     └─ Compare rates → check_room_availability for specific room
-│        └─ Available? → create_booking with guest info
+│        └─ Available? → obtain user_key → create_booking with guest info
 │           └─ Success → query_booking for confirmation
 │
 ├─ Check status? → query_booking with booking_id

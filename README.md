@@ -1,16 +1,17 @@
-# Hotel Booking AI — OpenClaw Skill
+# Hotel Booking AI - ToC Skill
 
-B2B 酒店预订技能，支持搜索酒店、查询房型、验价锁房、创建预订、发起支付的完整工作流。
+面向个人用户的酒店查询与预订技能。酒店搜索、详情、搜价和验价无需登录，创建及操作订单时才需要 AgentAuth `user_key`。
 
 ## 功能
 
 - **搜索地区/酒店**：按城市名、地标、酒店名模糊搜索
 - **搜索酒店列表**：按地区和日期查询最低价酒店
+- **查询酒店详情**：获取地址、设施、政策、图片和静态房型
 - **查询房型价格**：获取指定酒店的全部房型和实时价格
 - **验价锁房**：锁定房价，确保预订前价格有效
 - **创建预订**：提交订单，支持中英文姓名自动解析
 - **查询预订**：随时查看订单状态和确认号
-- **发起支付**：支持微信支付和支付宝
+- **发起支付**：支持 Stripe、微信支付和支付宝
 
 ## 目录结构
 
@@ -43,8 +44,8 @@ nohup ./chls-skill -port :9061 > chls-skill.log 2>&1 &
 将 `SKILL.md` 复制到 OpenClaw 技能目录，重启网关：
 
 ```bash
-mkdir -p ~/.openclaw/skills/b2b-booking
-cp SKILL.md ~/.openclaw/skills/b2b-booking/
+mkdir -p ~/.openclaw/skills/hotel-booking-ai
+cp SKILL.md ~/.openclaw/skills/hotel-booking-ai/
 openclaw gateway restart
 ```
 
@@ -56,16 +57,19 @@ openclaw gateway restart
 
 | 接口 | 说明 |
 |------|------|
-| `POST /skill/search_location` | 搜索地区或酒店 |
-| `POST /skill/search_hotels` | 搜索酒店列表 |
-| `POST /skill/query_room_rates` | 查询房型和价格 |
-| `POST /skill/check_room_availability` | 验价锁房 |
-| `POST /skill/create_booking` | 创建预订 |
-| `POST /skill/query_booking` | 查询预订 |
-| `POST /skill/cancel_booking` | 取消预订 |
-| `POST /skill/pay_order` | 发起支付 |
+| `POST /toc/skill/search_location` | 搜索地区或酒店 |
+| `POST /toc/skill/search_hotels` | 搜索酒店列表 |
+| `POST /toc/skill/get_hotel_detail` | 查询酒店静态详情 |
+| `POST /toc/skill/query_room_rates` | 查询房型和价格 |
+| `POST /toc/skill/check_room_availability` | 验价锁房 |
+| `POST /toc/skill/create_booking` | 创建预订 |
+| `POST /toc/skill/query_booking` | 查询预订 |
+| `POST /toc/skill/cancel_booking` | 取消预订 |
+| `POST /toc/skill/pay_order` | 发起支付 |
 
-所有请求体需包含 `user_key` 字段（从 [AgentAuth Dashboard](https://aauth-170125614655.asia-northeast1.run.app/dashboard) 获取）。
+搜索、详情、搜价和验价请求无需 `user_key`。创建预订、查询预订、取消预订和支付必须包含从 [AgentAuth Dashboard](https://aauth-170125614655.asia-northeast1.run.app/dashboard) 获取的 `user_key`。
+
+用户未指定入住条件时，服务端默认明天入住、后天离店、1 位成人、1 间房。
 
 ## 使用示例
 
@@ -82,7 +86,7 @@ openclaw gateway restart
 用户：第2家，标准间
 
 机器人：已验价，标准大床房 ¥850/晚，2晚共 ¥1,700。
-       请提供入住人姓名。
+       请提供入住人姓名。是否需要填写联系邮箱？填写后可接收预订成功、失败和取消等订单通知；不填写也可以继续下单。
 
 用户：张三
 
