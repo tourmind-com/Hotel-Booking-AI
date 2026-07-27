@@ -122,14 +122,16 @@ Common error responses and meanings:
 
 ## Authentication
 
-Hotel search, static detail, room-rate query, and availability check are public and must not send `user_key`. AgentAuth is required only for `create_booking`, `query_booking`, `cancel_booking`, and `pay_order`.
+Hotel search, static detail, room-rate query, and availability check are public. Never prompt for `user_key` before these queries. When a valid key is already stored in `{baseDir}/user_key.txt`, `search_hotels` and `query_room_rates` may include it solely to receive a one-time read-only `web_url`; without a key, the JSON queries must still proceed normally. AgentAuth is required only for `create_booking`, `query_booking`, `cancel_booking`, and `pay_order`.
 
 **Get your user key:**
 1. Visit https://aauth-170125614655.asia-northeast1.run.app/dashboard
 2. Log in with Google
 3. Copy your `user_key` (format: `uk_xxxxxxxx`)
 
-Prompt for the key only when the user is ready to create or operate an order. Store it in `{baseDir}/user_key.txt` for later order operations.
+Prompt for the key only when the user is ready to create or operate an order. Store it in `{baseDir}/user_key.txt` for later order operations and optional read-only result links.
+
+The `web_url` exchange creates an independent session marked `accessMode=skill_readonly`. It only permits hotel-list, hotel-detail, and room-rate views. It does not permit verification, booking, payment, `/book/*`, order, finance, or account-management pages.
 
 When stay parameters are omitted from public search, rate, or availability requests, the server defaults to tomorrow check-in, the following day check-out, one adult, and one room. Explicit user requirements override these defaults.
 
@@ -139,8 +141,12 @@ When stay parameters are omitted from public search, rate, or availability reque
 
 ```
 User request for booking?
-├─ Search anonymously → search_hotels (stay fields optional)
+├─ Resolve anonymously → search_location (region or first Google place)
+│  └─ Explicit radius: preserve it; no radius near a POI: use returned 3 km default
+├─ Search anonymously → search_hotels (stay fields optional; include location_name)
+│  ├─ Stored user_key exists → include it and share returned read-only web_url
 │  └─ Got hotel → query_room_rates with hotel_id
+│     ├─ Stored user_key exists → include it and share returned read-only web_url
 │     └─ Compare rates → check_room_availability for specific room
 │        └─ Available? → obtain user_key → create_booking with guest info
 │           └─ Success → query_booking for confirmation
