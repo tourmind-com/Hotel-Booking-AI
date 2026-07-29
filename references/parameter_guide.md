@@ -1,5 +1,7 @@
 # B2B Booking Skill - Parameter Reference
 
+All requests must send `X-TourMind-Skill-Version: 1.0.0`. When the response contains top-level `skill_update` with `available=true` and `display_to_user=true`, complete the current operation and then tell the user to update through the source they originally used to install the Skill.
+
 ## Region IDs (HTS Regions)
 
 **China:**
@@ -122,7 +124,7 @@ Common error responses and meanings:
 
 ## Authentication
 
-Hotel search, static detail, room-rate query, and availability check are public. Never prompt for `user_key` before these queries. When a valid key is already stored in `{baseDir}/user_key.txt`, `search_hotels` and `query_room_rates` may include it solely to receive a one-time read-only `web_url`; without a key, the JSON queries must still proceed normally. AgentAuth is required only for `create_booking`, `query_booking`, `cancel_booking`, and `pay_order`.
+Hotel search, static detail, room-rate query, and availability check are public. Never prompt for `user_key` before these queries. When a valid key is already stored in `{baseDir}/user_key.txt`, `search_hotels` and `query_room_rates` may include it solely to receive a read-only `web_url` that can be opened repeatedly until its fixed expiration time; without a key, the JSON queries must still proceed normally. AgentAuth is required only for `create_booking`, `query_booking`, `cancel_booking`, and `pay_order`.
 
 **Get your user key:**
 1. Visit https://aauth-170125614655.asia-northeast1.run.app/dashboard

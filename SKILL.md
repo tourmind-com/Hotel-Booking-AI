@@ -9,7 +9,7 @@ metadata.openclaw: {"emoji": "🏨", "primaryEnv": "user_key.txt"}
 > **⚠️ 关键规则（必须遵守）**
 >
 > 1. **严禁从训练数据或记忆中编造酒店、房型、价格等信息。** 所有酒店相关数据必须且只能来自 HTTP 接口的实时返回结果。如果接口调用失败且重试后仍无法成功，如实告知用户遇到的错误，绝对不要凭记忆回答或自行推荐。
-> 2. **查询阶段无需登录。** 不得为了搜索、酒店详情、搜价或验价要求用户提供 `user_key`。如果 `{baseDir}/user_key.txt` 已存在有效值，`search_hotels` 和 `query_room_rates` 可以附带该值，以生成一次性只读 TourMind 页面；没有 `user_key` 时仍须正常完成 JSON 查询。只有创建订单、查询订单、取消订单和支付必须登录。
+> 2. **查询阶段无需登录。** 不得为了搜索、酒店详情、搜价或验价要求用户提供 `user_key`。如果 `{baseDir}/user_key.txt` 已存在有效值，`search_hotels` 和 `query_room_rates` 可以附带该值，以生成有固定有效期的只读 TourMind 页面；该链接在过期前可重复打开。没有 `user_key` 时仍须正常完成 JSON 查询。只有创建订单、查询订单、取消订单和支付必须登录。
 > 3. **正确解读取消政策字段 `cancelPolicyInfos`。** `refundable: true` 表示该房型可退款/可取消，不得解释为“不可取消”。对于 `refundable: true` 的房型，`startDateTime` 表示免费取消截止时间：在此之前取消免费，在此之后取消需支付 `amount` 金额作为取消费。`amount > 0` 不代表不可取消。
 > 4. **默认入住条件。** 用户未指定时，搜索、搜价和验价请求不传日期、成人数和房间数，由服务端使用明天入住、后天离店、1 位成人、1 间房。用户明确指定时必须传入用户条件覆盖默认值。
 > 5. **创建预订前必须询问联系邮箱。** 每次调用 `create_booking` 前必须询问用户是否填写 `contact_email`，并说明填写后可接收预订成功、预订失败及订单取消等状态通知；不填写也可继续下单，但无法通过邮箱接收这些通知。只有用户提供邮箱或明确选择跳过后才能继续创建订单。不得猜测或编造邮箱，手机号不需要收集。
@@ -17,6 +17,7 @@ metadata.openclaw: {"emoji": "🏨", "primaryEnv": "user_key.txt"}
 ## API
 
 **Base URL:** `http://39.108.114.224:9028`
+**Skill version:** `1.0.0`
 
 所有接口均为 `POST`。查询阶段无需登录；订单阶段请求体必须包含 `user_key`。已有 `user_key` 只会让酒店列表和房型报价响应额外包含只读网页链接，不改变查询权限。
 
@@ -39,51 +40,53 @@ metadata.openclaw: {"emoji": "🏨", "primaryEnv": "user_key.txt"}
 成功：`{"ok": true, "data": {...}}`  
 失败：`{"ok": false, "error": "错误描述"}`
 
+所有请求必须携带 `X-TourMind-Skill-Version: 1.0.0`。响应顶层出现 `skill_update.available=true` 且 `display_to_user=true` 时，先正常完成当前业务，再告知用户 Skill 有新版本，并提示用户通过原安装来源更新；不得猜测安装来源。
+
 ### 调用方式（curl 示例）
 
 ```bash
 # 搜索地区
-curl -s -X POST -H "Content-Type: application/json" \
+curl -s -X POST -H "Content-Type: application/json" -H "X-TourMind-Skill-Version: 1.0.0" \
   "http://39.108.114.224:9028/toc/skill/search_location" \
   -d '{"keyword": "东京"}'
 
 # 搜索酒店
-curl -s -X POST -H "Content-Type: application/json" \
+curl -s -X POST -H "Content-Type: application/json" -H "X-TourMind-Skill-Version: 1.0.0" \
   "http://39.108.114.224:9028/toc/skill/search_hotels" \
   -d '{"region_id": "3263"}'
 
 # 查询酒店详情
-curl -s -X POST -H "Content-Type: application/json" \
+curl -s -X POST -H "Content-Type: application/json" -H "X-TourMind-Skill-Version: 1.0.0" \
   "http://39.108.114.224:9028/toc/skill/get_hotel_detail" \
   -d '{"hotel_id": "12345"}'
 
 # 查询房型
-curl -s -X POST -H "Content-Type: application/json" \
+curl -s -X POST -H "Content-Type: application/json" -H "X-TourMind-Skill-Version: 1.0.0" \
   "http://39.108.114.224:9028/toc/skill/query_room_rates" \
   -d '{"hotel_id": "12345"}'
 
 # 验价
-curl -s -X POST -H "Content-Type: application/json" \
+curl -s -X POST -H "Content-Type: application/json" -H "X-TourMind-Skill-Version: 1.0.0" \
   "http://39.108.114.224:9028/toc/skill/check_room_availability" \
   -d '{"hotel_id": "12345", "rate_code": "xxx"}'
 
 # 创建预订
-curl -s -X POST -H "Content-Type: application/json" \
+curl -s -X POST -H "Content-Type: application/json" -H "X-TourMind-Skill-Version: 1.0.0" \
   "http://39.108.114.224:9028/toc/skill/create_booking" \
   -d '{"user_key": "<user_key>", "hotel_id": "12345", "rate_code": "xxx", "check_in_date": "2026-05-01", "check_out_date": "2026-05-02", "guest_name": "张三", "contact_email": "guest@example.com", "adults": 1, "room_count": 1, "total_price": 1260.00}'
 
 # 查询预订
-curl -s -X POST -H "Content-Type: application/json" \
+curl -s -X POST -H "Content-Type: application/json" -H "X-TourMind-Skill-Version: 1.0.0" \
   "http://39.108.114.224:9028/toc/skill/query_booking" \
   -d '{"user_key": "<user_key>", "agent_ref_id": "TM20260501001"}'
 
 # 取消预订
-curl -s -X POST -H "Content-Type: application/json" \
+curl -s -X POST -H "Content-Type: application/json" -H "X-TourMind-Skill-Version: 1.0.0" \
   "http://39.108.114.224:9028/toc/skill/cancel_booking" \
   -d '{"user_key": "<user_key>", "agent_ref_id": "TM20260501001"}'
 
 # 支付
-curl -s -X POST -H "Content-Type: application/json" \
+curl -s -X POST -H "Content-Type: application/json" -H "X-TourMind-Skill-Version: 1.0.0" \
   "http://39.108.114.224:9028/toc/skill/pay_order" \
   -d '{"user_key": "<user_key>", "agent_ref_id": "TM20260501001", "payment_method": "微信支付"}'
 ```
@@ -137,9 +140,9 @@ curl -s -X POST -H "Content-Type: application/json" \
 | room_count | int | 房间数（可选，默认 1） |
 | lowest_price | int | 最低价格（CNY，可选） |
 | highest_price | int | 最高价格（CNY，可选） |
-| user_key | string | 可选；仅在本地已保存有效值时附带，用于生成一次性只读网页，不得为此向用户索取 |
+| user_key | string | 可选；仅在本地已保存有效值时附带，用于生成有固定有效期的只读网页，不得为此向用户索取 |
 
-返回 `data.hotels`，最多 20 家价格最低的酒店。请求附带有效 `user_key` 时，还会返回顶层 `data.web_url`、`data.web_url_expires_at` 和 `data.web_url_one_time`。必须把 `web_url` 作为可点击的酒店列表链接提供给用户。该链接签发独立的只读 Skill 会话，只允许查看酒店列表、酒店详情和房型报价，不支持验价、预订、支付、订单、财务、账号管理或 `/book/*` 页面。
+返回 `data.hotels`，最多 20 家价格最低的酒店。请求附带有效 `user_key` 时，还会返回顶层 `data.web_url`、`data.web_url_expires_at` 和 `data.web_url_one_time`。必须把 `web_url` 作为可点击的酒店列表链接提供给用户。该链接在 `data.web_url_expires_at` 前可重复打开，并签发独立的只读 Skill 会话；只允许查看酒店列表、酒店详情和房型报价，不支持验价、预订、支付、订单、财务、账号管理或 `/book/*` 页面。
 
 ### /toc/skill/get_hotel_detail
 
@@ -158,11 +161,11 @@ curl -s -X POST -H "Content-Type: application/json" \
 | check_out_date | string | 离店日期（可选，默认入住次日） |
 | adults | int | 每间客房成人数（可选，默认 1） |
 | room_count | int | 房间数（可选，默认 1） |
-| user_key | string | 可选；仅在本地已保存有效值时附带，用于生成一次性只读网页，不得为此向用户索取 |
+| user_key | string | 可选；仅在本地已保存有效值时附带，用于生成有固定有效期的只读网页，不得为此向用户索取 |
 
 返回 `data.room_types`。每个房型包含 `room_type_code`、`name`、`name_cn`、`bed_type_desc`、`basic_room_image` 和 `products`。每个 product 按「房型 + 最大入住人数 + 餐食 + 取消政策」聚合，只保留该产品维度最低价 RP；使用 `product.rate.rate_code` 进行验价。
 
-请求附带有效 `user_key` 时，同时返回顶层 `data.web_url`、`data.web_url_expires_at` 和 `data.web_url_one_time`。必须把 `web_url` 作为可点击的酒店详情和房型报价链接提供给用户。链接页面仅供查看，不支持验价、预订、支付及任何订单、财务或账号操作；需要继续操作时回到当前 AI 会话调用 Skill API。
+请求附带有效 `user_key` 时，同时返回顶层 `data.web_url`、`data.web_url_expires_at` 和 `data.web_url_one_time`。必须把 `web_url` 作为可点击的酒店详情和房型报价链接提供给用户。链接在 `data.web_url_expires_at` 前可重复打开；页面仅供查看，不支持验价、预订、支付及任何订单、财务或账号操作；需要继续操作时回到当前 AI 会话调用 Skill API。
 
 ### /toc/skill/check_room_availability
 
