@@ -6,7 +6,7 @@ description: >
 metadata: {"openclaw": {"emoji": "🏨", "primaryEnv": "user_key.txt"}}
 ---
 
-# Hotel Booking AI Skill (ToC)
+# Hotel Booking AI Skill 
 
 **Skill version:** `1.0.0`
 
