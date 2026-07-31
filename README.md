@@ -1,6 +1,6 @@
-# Hotel Booking AI ToC Skill
+# Hotel Booking AI Skill
 
-TourMind's end-to-end ToC hotel booking skill for AI clients. Public queries require no login; creating or operating an order uses AgentAuth `user_key`.
+TourMind's end-to-end hotel booking skill for AI clients. Public queries require no login; creating or operating an order uses AgentAuth `user_key`.
 
 ## Features
 
