@@ -101,3 +101,14 @@ Assistant: Booking created. TourMind order number: TM20260428001. Choose Stripe,
 ## API reference
 
 See [references/parameter_guide.md](references/parameter_guide.md) for request fields, POI resolution, candidate ranking, image mapping, taxes, and booking rules. Resolve city and region IDs through the live `search_location` endpoint instead of relying on hardcoded values.
+
+## TourMind hotel booking ecosystem
+
+Choose the package that matches the audience and connection model:
+
+| Audience | Integration | Authentication model | Repository |
+|---|---|---|---|
+| Consumer / ToC | Direct HTTP Skill | Public search and availability; `user_key` only for order operations | **[Hotel Booking AI](https://github.com/tourmind-com/Hotel-Booking-AI)** |
+| Business / ToB | Direct HTTP Skill | Skill Token required for every API call | [TourMind Booking Skill](https://github.com/tourmind-com/Tourmind-Booking-Skill) |
+| Consumer / ToC | MCP package + companion Skill | Public MCP connection; `user_key` only for order operations | [Hotel Booking AI MCP](https://github.com/tourmind-com/Hotel-Booking-AI-MCP) |
+| Business / ToB | MCP package + companion Skill | Bearer-authenticated MCP connection | [TourMind Booking MCP](https://github.com/tourmind-com/Tourmind-Booking-MCP) |
