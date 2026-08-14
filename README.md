@@ -67,7 +67,7 @@ The key file is excluded by `.gitignore` and must never be committed. No local M
 | `POST /skill/toc/cancel_booking` | Cancel a booking |
 | `POST /skill/toc/pay_order` | Start payment |
 
-`check_skill_update`, hotel search, static detail, room-rate query and availability check require no `user_key`. `create_booking`, `query_booking`, `cancel_booking` and `pay_order` require the key from `user_key.txt`. An already stored valid key may be included in `search_hotels` and `query_room_rates` solely to receive a read-only `web_url`; never prompt for it during public queries.
+`check_skill_update`, hotel search, static detail, room-rate query and availability check are public and must omit `user_key`. In particular, call `search_hotels` and `query_room_rates` without `user_key`; these public responses may include their read-only `web_url`. Only `create_booking`, `query_booking`, `cancel_booking` and `pay_order` receive the key from `user_key.txt`.
 
 The authoritative Skill version is declared immediately below the title in `SKILL.md`. Send it as `current_version` only to `check_skill_update`: once when the Skill is first used in a new conversation, and again when an existing conversation resumes after at least 24 hours of inactivity.
 

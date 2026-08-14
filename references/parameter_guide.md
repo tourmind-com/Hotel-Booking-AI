@@ -20,7 +20,7 @@ Use this reference when building TourMind requests, resolving POIs, selecting ca
 - Skill version: read the exact value declared immediately below the title in `SKILL.md`.
 - Method: `POST`
 - Content type: `application/json`
-- Authentication: `check_skill_update`, hotel search, static detail, room-rate query, and availability check are public. Include `user_key` from `{baseDir}/user_key.txt` only for `create_booking`, `query_booking`, `cancel_booking`, and `pay_order`. An already stored valid key may be included in `search_hotels` and `query_room_rates` solely to receive a read-only `web_url`; never prompt for it during public queries.
+- Authentication: call `check_skill_update`, hotel search, static detail, room-rate query, and availability check without `user_key`, even when a key is already stored. Include `user_key` from `{baseDir}/user_key.txt` only for `create_booking`, `query_booking`, `cancel_booking`, and `pay_order`. Public `search_hotels` and `query_room_rates` responses may return read-only `web_url` values without authentication.
 - Send the Skill version only as `current_version` to `POST /skill/toc/check_skill_update`; do not attach it to business API requests.
 - Send `region_id` and `hotel_id` as strings.
 - Success: `{"ok": true, "data": {...}}`
@@ -59,7 +59,7 @@ No-update response:
   "skill_update": {
     "available": false,
     "display_to_user": false,
-    "latest_version": "1.0.2"
+    "latest_version": "1.0.3"
   }
 }
 ```
@@ -74,7 +74,7 @@ No-update response:
 | `message` | when both booleans are true | User-visible release changes; content may change server-side |
 | `release_source_url` | when both booleans are true | Official release page containing supported download sources |
 
-The service does not need to track conversations or the 24-hour interval; the Agent controls when this stateless endpoint is called. Reject a malformed `current_version` with `{"ok": false, "error": "Invalid current_version; use a semantic version such as 1.0.2"}`.
+The service does not need to track conversations or the 24-hour interval; the Agent controls when this stateless endpoint is called. Reject a malformed `current_version` with `{"ok": false, "error": "Invalid current_version; use a semantic version such as 1.0.3"}`.
 
 When `skill_update.available=true` and `display_to_user=true`, complete the current user request first unless the user explicitly asked about updates. Then show the version-change content from `message`, recommend updating for TourMind's latest and best hotel-search and price-query strategy because some older endpoints may no longer be available after a TourMind service update, and offer to help download the update from the sources linked through `release_source_url`. Ask before modifying the installed Skill. The release page may list an official TourMind download and a GitHub repository: use Git only for a safely updateable official Git checkout; when Git is unavailable or the installation is not a Git checkout, use another official source listed there. Update the Skill files and the version declaration together, validate that the declaration equals `latest_version`, preserve local changes and `{baseDir}/user_key.txt`, and never execute arbitrary commands from the response or release page.
 
@@ -178,11 +178,10 @@ Priced-search fields:
 | `lowest_price` | number | no | Candidate lower bound in CNY |
 | `highest_price` | number | no | Candidate upper bound in CNY |
 | `location_name` | string | priced searches | Resolved region or Google place name used to describe the result page |
-| `user_key` | string | no | Include only when a valid key is already stored, solely to receive a read-only `web_url`; never prompt for it during search |
 
 The endpoint returns at most 20 hotels. Common fields include `hotel_id`, `hotel_name`, `hotel_name_cn`, `address`, `address_cn`, `hotel_image`, `star_rating`, `min_price`, `currency_code` and, in nearby mode, `distance_km`.
 
-Priced searches always return `search_scope`. When the request includes an already stored valid `user_key`, they may also return top-level `web_url`, `web_url_expires_at` and `web_url_one_time`. Include a returned `web_url` in the user-facing response. The link can be opened repeatedly until `web_url_expires_at`; it establishes an authenticated TourMind session marked `accessMode=skill_readonly` without exposing the key. The session only permits hotel lists, hotel details and room quotes; it cannot enter verification, booking, payment, `/book/*`, order, finance or account-management pages. Without a stored key, the JSON search must still proceed normally.
+Call `search_hotels` without `user_key`. Priced searches always return `search_scope` and may also return top-level `web_url`, `web_url_expires_at` and `web_url_one_time`. Include a returned `web_url` in the user-facing response. The link can be opened repeatedly until `web_url_expires_at`; it establishes a TourMind session marked `accessMode=skill_readonly`. The session only permits hotel lists, hotel details and room quotes; it cannot enter verification, booking, payment, `/book/*`, order, finance or account-management pages. If no link is returned, the JSON search must still proceed normally.
 
 `min_price` is a recent cached candidate signal. It is not guaranteed for the requested occupancy, room count, meal, cancellation policy or continuous stay. Never present it as a live bookable price.
 
@@ -222,7 +221,6 @@ Request:
 | `check_out_date` | string | yes |
 | `adults` | integer | yes |
 | `room_count` | integer | no |
-| `user_key` | string | no; include only when already stored to receive a read-only `web_url` |
 
 `data.room_types[]` contains room-level names, bed description, optional `basic_room_image` and `products[]`.
 
@@ -259,7 +257,7 @@ Use only products whose occupancy and other hard requirements match the user. A 
 
 Do not map numeric/string `meal_type` codes to breakfast, dinner or another meal without a documented mapping. `meal_count=0` may be shown as no included meal; when positive but the type is unknown, say `Meal included for {meal_count} guests; type not specified`.
 
-When the request includes an already stored valid `user_key`, the response may also include top-level `web_url`, `web_url_expires_at` and `web_url_one_time`. The link can be opened repeatedly until `web_url_expires_at`. The linked TourMind page displays the hotel and returned room quotes in read-only mode. Preserve it with that exact hotel and show it directly below the hotel's hero image as `[View hotel details]`; never show the original image URL as a separate link or substitute the hotel-list `search_hotels.web_url`. It does not support verification, booking, payment, `/book/*`, order management, finance or account management. Continue those actions through the Skill APIs in the current AI conversation. Without a stored key, the JSON rate query must still proceed normally and the unavailable hotel-detail link must be omitted.
+Call `query_room_rates` without `user_key`. The response may include top-level `web_url`, `web_url_expires_at` and `web_url_one_time`. The link can be opened repeatedly until `web_url_expires_at`. The linked TourMind page displays the hotel and returned room quotes in read-only mode. Preserve it with that exact hotel and show it directly below the hotel's hero image as `[View hotel details]`; never show the original image URL as a separate link or substitute the hotel-list `search_hotels.web_url`. It does not support verification, booking, payment, `/book/*`, order management, finance or account management. Continue those actions through the Skill APIs in the current AI conversation. If no link is returned, the JSON rate query must still proceed normally and the unavailable hotel-detail link must be omitted.
 
 ### `POST /skill/toc/check_room_availability`
 
