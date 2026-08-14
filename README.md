@@ -42,7 +42,7 @@ git clone https://github.com/tourmind-com/Hotel-Booking-AI.git ~/.openclaw/skill
 openclaw gateway restart
 ```
 
-Hotel search, details, live-rate queries and availability checks work without authentication. When the user is ready to create or operate an order, sign in with Google at `https://aauth-170125614655.asia-northeast1.run.app/dashboard`, copy the `user_key`, save it as `user_key.txt` in the installed skill directory, and restrict its permissions:
+Hotel search, details, live-rate queries and availability checks work without authentication. When the user is ready to create or operate an order, sign in with Google at `https://auth.journione.ai`, copy the `user_key`, save it as `user_key.txt` in the installed skill directory, and restrict its permissions:
 
 ```bash
 chmod 600 ~/.openclaw/skills/hotel-booking-ai/user_key.txt

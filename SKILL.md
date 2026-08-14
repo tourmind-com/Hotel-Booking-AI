@@ -49,7 +49,7 @@ Failure: `{"ok": false, "error": "..."}`
 Before calling an order endpoint:
 
 1. Read `{baseDir}/user_key.txt`.
-2. If it is absent or empty, pause the order operation. Ask the user to sign in with Google at `https://aauth-170125614655.asia-northeast1.run.app/dashboard`, copy the `user_key` in the form `uk_xxxxxxxx`, and provide it. Save the supplied key to that file, then continue.
+2. If it is absent or empty, pause the order operation. Ask the user to sign in with Google at `https://auth.journione.ai`, copy the `user_key` in the form `uk_xxxxxxxx`, and provide it. Save the supplied key to that file, then continue.
 3. If an HTTP 401 or an error containing `unauthorized` is returned, delete `{baseDir}/user_key.txt`, stop the order workflow and ask the user to sign in again for a new key.
 
 Do not run these authentication steps before public endpoints.
