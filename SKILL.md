@@ -7,7 +7,7 @@ metadata: {"openclaw": {"emoji": "🏨", "primaryEnv": "user_key.txt"}}
 
 # Hotel Booking AI Skill 
 
-**Skill version:** `1.0.2`
+**Skill version:** `1.0.3`
 
 Use TourMind HTTP APIs for live hotel discovery, room-rate comparison, availability checks, booking, order management and payment.
 
@@ -162,7 +162,7 @@ Never write vague or unsupported reasons such as "great value," "convenient loca
 
 ## Required hotel-list response template
 
-Use this structure for every multi-hotel result. Default to five selected hotels. Translate user-facing labels into the user's language while preserving the structure and field meanings.
+Use this English structure for every multi-hotel result. Default to five selected hotels. Keep all fixed template labels and guidance in English; do not add localized duplicate templates.
 
 ```markdown
 Found {candidate_count} candidate hotels and verified live room products for {verified_scope}; below are the {selected_count} selected based on “{ranking_dimensions}”.
@@ -191,18 +191,7 @@ Address: {address}
 
 Set `{verified_scope}` truthfully. Say `all candidates` only after querying live room products for every candidate; otherwise say `all candidates that passed the hard constraints`. Use the default `{ranking_dimensions}` of `immediate bookability, distance, stay total, cancellation flexibility`, adding or replacing dimensions when the user supplied explicit filters or sorting preferences.
 
-If `search_hotels` did not return `web_url`, omit the entire `👉 More hotels` paragraph. Never ask the user for `user_key` merely to populate this optional link. In Chinese, use this exact wording:
-
-```markdown
-找到{candidate_count}家候选酒店，并核验了{verified_scope}的实时房型；以下是综合“{ranking_dimensions}”选出的{selected_count}家。
-
-搜索范围：{region_or_poi_and_radius_resolution_note}
-入住：{check_in_date} 至 {check_out_date}，共{night_count}晚
-住客：{total_adults}位成人、{room_count}间房（{occupancy_distribution}）
-价格口径：TourMind实时房价；每晚价格为每间房价格，总价为{room_count}间房住满{night_count}晚
-
-👉 更多酒店：[查看详细酒店结果]({web_url})。进入详情后，点击房型右侧“复制”并发给我，即可预订。
-```
+If `search_hotels` did not return `web_url`, omit the entire `👉 More hotels` paragraph. Never ask the user for `user_key` merely to populate this optional link.
 
 When the user sends a copied hotel-product block from that page, treat it as a hotel and room selection. Parse the hotel name and address, stay dates, room name, room count, bed and meal information, occupancy, nationality, displayed nightly price, displayed total and cancellation policy when present. Resolve the exact hotel and locate the closest matching live room product through the Skill APIs, then run `check_room_availability` before booking. The copied price and inventory are dynamic reference data, not a substitute for final verification. If multiple live products still match, present the material differences and ask the user to choose; do not guess a rate code.
 
@@ -212,7 +201,7 @@ Hero-image rendering rules for both hotel-list and hotel-detail responses:
 - If the user is currently using this Skill in the ChatGPT or Codex client, download the selected returned hero image to a client-accessible local file before responding. Set `{hotel_image_render_target}` to the file's absolute filesystem path; do not use the remote URL as the primary image render target.
 - In other clients, set `{hotel_image_render_target}` to the selected original URL.
 - Never expose the original hero-image URL as a separate link. If the local download fails or does not produce an accessible image file, omit the broken Markdown image.
-- Directly below the image, or below the unavailable-image notice, show `[View hotel details]({hotel_web_url})` using the top-level `web_url` returned by `query_room_rates` for that exact hotel. Translate the label for the user; in Chinese use `[查看酒店详情]({hotel_web_url})`.
+- Directly below the image, or below the unavailable-image notice, show `[View hotel details]({hotel_web_url})` using the top-level `web_url` returned by `query_room_rates` for that exact hotel. Keep this label in English.
 - Never substitute the hotel-list `search_hotels.web_url`, an image URL, or a constructed URL for `{hotel_web_url}`. If the corresponding `query_room_rates` response has no `web_url`, omit the hotel-detail link.
 - If no hero-image URL exists, write `A hero image is not currently available for this hotel.` and continue with the hotel-detail link when available.
 
@@ -284,32 +273,32 @@ Before `create_booking`:
 - Require a plausible email format and confirm it belongs to the current booking context.
 - Use the `rate_code` and `total_price` returned by `check_room_availability`, not the earlier query price.
 
-For hotel check-in/out times, instructions and mandatory at-property fees, use the selected hotel's `get_hotel_detail` response. Show unavailable fields as `酒店未提供` rather than guessing. In Chinese, use this exact final confirmation template (translate it for other languages while preserving all fields):
+For hotel check-in/out times, instructions and mandatory at-property fees, use the selected hotel's `get_hotel_detail` response. Show unavailable fields as `Not provided by the hotel` rather than guessing. If no explicit mandatory-fee content is returned, replace `{mandatory_fee_summary_or_fallback}` with `The hotel did not return any additional mandatory fee information.` Use this exact English final confirmation template; do not translate its fixed labels or guidance:
 
 ```markdown
-### 请确认订单信息
+### Please confirm your booking
 
-| 项目 | 验价后信息 |
+| Item | Verified details |
 |---|---|
-| 酒店 | {hotel_name} |
-| 房型 | {room_name} |
-| 入住日期 | {check_in_date} |
-| 退房日期 | {check_out_date} |
-| 入住/退房时间 | {checkin_begin_time_or_not_provided} 起入住；{checkout_time_or_not_provided} 前退房 |
-| 入住人 | {guest_count}位成人，{room_count}间房 |
-| 房价总额 | {checked_total_price} {currency} |
-| 取消政策 | {checked_cancellation_policy} |
-| 库存 | {checked_availability_status} |
+| Hotel | {hotel_name} |
+| Room | {room_name} |
+| Check-in date | {check_in_date} |
+| Check-out date | {check_out_date} |
+| Check-in / check-out time | Check-in from {checkin_begin_time_or_not_provided}; check-out by {checkout_time_or_not_provided} |
+| Guests | {guest_count} adults, {room_count} rooms |
+| Room price total | {checked_total_price} {currency} |
+| Cancellation policy | {checked_cancellation_policy} |
+| Availability | {checked_availability_status} |
 
-**到店费用**
+**At-property charges**
 
-{mandatory_fee_summary_or_酒店未返回额外到店费用说明}
+{mandatory_fee_summary_or_fallback}
 
-我们价格已含税，但少数国家（地区）必须由酒店代收城市/旅游税，具体费用以酒店征收为准。因此在您办理入住手续时酒店可能会额外收取，请您提前知晓并做好相应准备。请您谅解！
+Our prices include taxes. However, in a small number of countries or regions, city or tourism taxes must be collected directly by the hotel. The final amount is determined by the hotel and may be charged when you check in. Please be aware of this possible additional charge and plan accordingly. Thank you for your understanding.
 
-TourMind客服中心7×24小时全天候为您服务，联系我们 +86-755 3665 4666。
+TourMind Customer Service is available 24/7. Contact us at +86-755 3665 4666.
 
-请确认以上订单信息。确认下单请回复“确认下单”，并提供入住人的**法定全名**及**联系邮箱**；我将为您创建订单并进入支付流程。
+Please review the booking details above. To proceed, reply **“Confirm booking”** and provide the guest's **full legal name** and **contact email**. I will then create the booking and continue to payment.
 ```
 
 After booking, return `data.agent_ref_id`. For payment, use only the public names `Stripe`, `WeChat Pay`, and `Alipay`, mapping them to the documented API values. Before Stripe, explain that Stripe - not the hotel or TourMind - adds a 3.5% payment-processing fee; show the returned fee and payable amount.
