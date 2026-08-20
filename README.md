@@ -1,11 +1,11 @@
 <div align="center">
 
 <h1 style="border-bottom: none">
-  <b><a href="https://github.com/tourmind-com/Hotel-Booking-AI">Hotel Booking AI</a></b><br />
+  <b><a href="https://tourmind.com/skills">Hotel Booking AI</a></b><br />
   <strong>Your Personal AI Hotel Search & Booking Assistant</strong>
 </h1>
 
-<a href="https://clawhub.ai/tourmind/skills/hotel-booking-ai">
+<a href="https://auth.journione.ai/">
   <img alt="Hotel Booking AI — search, compare, and book hotels with your AI agent" src="https://skilloss.tourmind.com/skills/tourmind-booking/v1/hero/tourmind-booking-skills.png" style="width: 100%" />
 </a>
 
