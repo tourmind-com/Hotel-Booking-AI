@@ -1,114 +1,224 @@
-# Hotel Booking AI Skill
+<div align="center">
 
-TourMind's end-to-end hotel booking skill for AI clients. Public queries require no login; creating or operating an order uses AgentAuth `user_key`.
+<h1 style="border-bottom: none">
+  <b><a href="https://github.com/tourmind-com/Hotel-Booking-AI">Hotel Booking AI</a></b><br />
+  <strong>Your Personal AI Hotel Search & Booking Assistant</strong>
+</h1>
 
-## Features
+<a href="https://clawhub.ai/tourmind/skills/hotel-booking-ai">
+  <img alt="Hotel Booking AI — search, compare, and book hotels with your AI agent" src="https://skilloss.tourmind.com/skills/tourmind-booking/v1/hero/tourmind-booking-skills.png" style="width: 100%" />
+</a>
 
-- Resolves cities, hotels, landmarks, stations, and other POIs without inventing coordinates.
-- Verifies up to 20 hotel candidates against live room products and selects the five best matches.
-- Returns consistent hotel cards with images, distance, live prices, cancellation terms, tax status, and evidence-based match reasons.
-- Returns hotel details, room images, beds, meals, live quotes, and cancellation terms together.
-- Rechecks price and availability before booking.
-- Creates bookings after collecting the guest's legal name and required contact email.
-- Queries and cancels existing bookings.
-- Starts Stripe, WeChat Pay, or Alipay payments and discloses Stripe's 3.5% processing fee when applicable.
+<br />
 
-## Installable contents
+<p align="center">
+  Find a better stay. Compare live prices. Book with confidence.
+</p>
 
-```
-├── .gitignore
-├── LICENSE
-├── README.md
-├── SKILL.md
-├── references/
-│   └── parameter_guide.md
-```
+<br />
 
-Evaluation fixtures, test reports, review translations, and development-only validators are intentionally excluded from the installable release.
+<div align="center">
+  <a href="https://clawhub.ai/tourmind/skills/hotel-booking-ai">Install from ClawHub</a> |
+  <a href="https://github.com/tourmind-com/Hotel-Booking-AI">GitHub</a> |
+  <a href="https://tourmind.com">TourMind</a>
+</div>
 
-## Installation
+<br />
 
-Install from ClawHub:
+[![ClawHub](https://img.shields.io/badge/ClawHub-Hotel--booking--ai-F97316)](https://clawhub.ai/tourmind/skills/hotel-booking-ai)
+[![Skill version](https://img.shields.io/badge/Skill_version-1.0.5-2563EB)](SKILL.md)
+[![License](https://img.shields.io/github/license/tourmind-com/Hotel-Booking-AI)](LICENSE)
+
+</div>
+
+<br />
+
+Turn your AI agent into a personal hotel booking assistant. Hotel Booking AI searches hotels worldwide, compares live room prices from leading OTAs and hotel suppliers, shows photos and cancellation terms, verifies the final rate, and helps you complete booking, payment, cancellation, and order lookup in one conversation.
+
+Hotel search, room details, live rates, and availability checks are public—no account or sign-in is required until you are ready to book.
+
+## Demo
+
+### 1. Discover hotels with live availability
+
+<div align="center">
+  <a href="https://skilloss.tourmind.com/skills/tourmind-booking/v1/demo/search-en.gif">
+    <img src="https://skilloss.tourmind.com/skills/tourmind-booking/v1/demo/search-en.gif" alt="Hotel Booking AI live hotel search demo" width="720" />
+  </a>
+</div>
+
+### 2. Compare rooms, photos, and prices
+
+<div align="center">
+  <a href="https://skilloss.tourmind.com/skills/tourmind-booking/v1/demo/detail-en.gif">
+    <img src="https://skilloss.tourmind.com/skills/tourmind-booking/v1/demo/detail-en.gif" alt="Hotel Booking AI room and price comparison demo" width="720" />
+  </a>
+</div>
+
+### 3. Recheck the rate and pay securely
+
+<div align="center">
+  <a href="https://skilloss.tourmind.com/skills/tourmind-booking/v1/demo/pay-en.gif">
+    <img src="https://skilloss.tourmind.com/skills/tourmind-booking/v1/demo/pay-en.gif" alt="Hotel Booking AI booking and payment demo" width="720" />
+  </a>
+</div>
+
+## Plan and book your stay in one chat
+
+- Search by city, hotel, landmark, station, address, ski area, or other point of interest without guessed coordinates.
+- Compare up to 20 hotel candidates and receive the five best options backed by matching live room products.
+- See real nightly and stay-total prices, room and hotel photos, bed types, meals, taxes, cancellation policies, and inventory status.
+- Filter for the details that matter to you, such as budget, distance, star rating, breakfast, facilities, room type, or free cancellation.
+- Understand why each hotel matches your trip instead of receiving generic recommendations.
+- Recheck the exact room price and availability before confirming your booking.
+- Book a room, pay with Stripe, WeChat Pay, or Alipay, look up an order, or cancel an eligible reservation through the same conversation.
+
+## Supported AI clients
+
+| Client | How to use Hotel Booking AI |
+|---|---|
+| OpenClaw | Install directly from ClawHub or clone this repository into your personal Skills directory |
+| WorkBuddy | Install or import this repository as a user Skill |
+| OpenAI Codex | Install from the Skills interface or a supported local Skills directory |
+| Claude Code | Install as a personal Skill under `~/.claude/skills` |
+| Agent Skills-compatible clients | Use any client that can load a root `SKILL.md` and make outbound HTTPS `POST` requests |
+| MCP-capable AI clients | Use the companion [Hotel Booking AI MCP](https://github.com/tourmind-com/Hotel-Booking-AI-MCP) package |
+
+## Install in 1 minute
+
+### Option 1: Install from ClawHub
 
 ```bash
 openclaw skills install @tourmind/hotel-booking-ai
-```
-
-Or clone this repository into the OpenClaw skills directory:
-
-```bash
-mkdir -p ~/.openclaw/skills
-git clone https://github.com/tourmind-com/Hotel-Booking-AI.git ~/.openclaw/skills/hotel-booking-ai
 openclaw gateway restart
 ```
 
-Hotel search, details, live-rate queries and availability checks work without authentication. When the user is ready to create or operate an order, sign in with Google at `https://auth.journione.ai`, copy the `user_key`, save it as `user_key.txt` in the installed skill directory, and restrict its permissions:
+### Option 2: Import from GitHub
+
+In your AI client's Skills interface, install or import this repository:
+
+```text
+https://github.com/tourmind-com/Hotel-Booking-AI.git
+```
+
+If your client installs Skills from the filesystem, clone the repository into its personal Skills directory:
 
 ```bash
-chmod 600 ~/.openclaw/skills/hotel-booking-ai/user_key.txt
+CLIENT_SKILLS_DIR="<your-client-skills-directory>"
+mkdir -p "$CLIENT_SKILLS_DIR"
+git clone https://github.com/tourmind-com/Hotel-Booking-AI.git "$CLIENT_SKILLS_DIR/hotel-booking-ai"
 ```
 
-The key file is excluded by `.gitignore` and must never be committed. No local MCP server is required; the skill calls the TourMind Skill API directly over HTTP.
+Common personal Skill locations:
 
-## API
-
-**Base URL:** `https://api.tourmind.com`
-
-| Endpoint | Purpose |
+| Client | Directory |
 |---|---|
-| `POST /skill/toc/check_skill_update` | Check whether the installed Skill has an update |
-| `POST /skill/toc/search_location` | Resolve a region, POI, or hotel |
-| `POST /skill/toc/search_hotels` | Search hotel candidates |
-| `POST /skill/toc/get_hotel_detail` | Get hotel details and images |
-| `POST /skill/toc/query_room_rates` | Get live rooms and rates |
-| `POST /skill/toc/check_room_availability` | Recheck price and availability |
-| `POST /skill/toc/create_booking` | Create a booking |
-| `POST /skill/toc/query_booking` | Query a booking |
-| `POST /skill/toc/cancel_booking` | Cancel a booking |
-| `POST /skill/toc/pay_order` | Start payment |
+| OpenClaw | `~/.openclaw/skills` |
+| WorkBuddy | `~/.workbuddy/skills` |
+| OpenAI Codex | Use the Skills interface or the local directory supported by your Codex version |
+| Claude Code | `~/.claude/skills` |
 
-`check_skill_update`, hotel search, static detail, room-rate query and availability check require no `user_key`. `create_booking`, `query_booking`, `cancel_booking` and `pay_order` require the key from `user_key.txt`. An already stored valid key may be included in `search_hotels` and `query_room_rates` solely to receive a read-only `web_url`; never prompt for it during public queries.
+Reload Skills or restart your AI client, then ask for a hotel. No local MCP server is required; Hotel Booking AI calls the TourMind API directly over HTTPS.
 
-The authoritative Skill version is declared immediately below the title in `SKILL.md`. Send it as `current_version` only to `check_skill_update`: once when the Skill is first used in a new conversation, and again when an existing conversation resumes after at least 24 hours of inactivity.
+## Search first, sign in only when you book
 
-## Example
+You can search hotels, inspect hotel and room details, compare live rates, and verify availability without a `user_key`.
 
-```
-User: Find a hotel in Tokyo for two adults from April 28 to April 30.
+When you are ready to create, view, cancel, or pay for a booking:
 
-Assistant: TourMind returned 20 candidates. I verified live rooms and rates and selected the five best matches.
+1. Sign in with Google at [auth.journione.ai](https://auth.journione.ai).
+2. Copy your `user_key` and save it as `user_key.txt` in the installed `hotel-booking-ai` folder. Your AI agent can also guide you through this step when you start an order operation.
+3. On macOS or Linux, restrict access to the file:
 
-           1. Example Hotel
-           [hotel hero image]
-           Lowest matching live rate: JPY 18,000 per night; JPY 36,000 total
-           Why it matches: low verified total in this set; fits two adults; immediately bookable inventory.
+   ```bash
+   chmod 600 user_key.txt
+   ```
 
-           I can also show the remaining candidates or the complete returned pool.
+Never commit `user_key.txt`. It is excluded by `.gitignore` and should stay only on your device.
 
-User: Show me the standard rooms at the second hotel.
+## Try these prompts
 
-Assistant: Here are the hotel's details, room images, and current matching quotes. Choose a room and I will perform a final price and availability check.
+Use natural language—the more you share about your trip, the more precisely your AI agent can compare verified hotel options.
 
-User: Book the standard king room.
-
-Assistant: Please provide the guest's full legal name and a contact email. The email is required for booking status and cancellation notifications.
-
-User: Alex Smith, guest@example.com
-
-Assistant: Booking created. TourMind order number: TM20260428001. Choose Stripe, WeChat Pay, or Alipay.
+```text
+I’m taking my family of four to Tokyo from April 3 to April 7, 2027. Find one room near a station with easy access to Tokyo Disneyland, breakfast, free cancellation, and a total price under JPY 120,000. Compare the five best available hotels with photos, room type, bed setup, nightly and total price, travel trade-offs, and cancellation deadlines. Do not book yet.
 ```
 
-## API reference
+```text
+Find a beachfront hotel in Phuket for two adults from November 12 to November 16, 2026. Keep the average price under THB 6,000 per night. I prefer a pool, breakfast, a king bed, and free cancellation. Show only options with matching live rooms, explain what each hotel does and does not meet, and rank them by overall fit.
+```
 
-See [references/parameter_guide.md](references/parameter_guide.md) for request fields, POI resolution, candidate ranking, image mapping, taxes, and booking rules. Resolve city and region IDs through the live `search_location` endpoint instead of relying on hardcoded values.
+```text
+Show me the available rooms at the second hotel. Include room photos, bed type, meals, cancellation policy, nightly price, stay total, and whether each room is immediately bookable. Recommend the best-value option, but wait for me to choose.
+```
 
-## TourMind hotel booking ecosystem
+```text
+Use the king room with breakfast. Recheck its exact price, availability, taxes, cancellation terms, and any fees collected at the hotel. Show me the final booking summary and wait for my explicit confirmation before creating the booking or starting payment.
+```
 
-Choose the package that matches the audience and connection model:
+```text
+Look up my booking using agent reference ID <AGENT_REF_ID>. Explain its current booking and payment status. If it can be cancelled, show the deadline, penalty, and expected refundable amount, then wait for my confirmation before cancelling anything.
+```
 
-| Audience | Integration | Authentication model | Repository |
+## How Hotel Booking AI works
+
+```text
+Your destination, dates, and guests
+  → resolve the city, hotel, or point of interest
+  → search up to 20 hotel candidates
+  → query matching live room products
+  → rank and present the five best verified hotels
+  → show hotel details, room photos, and current quotes
+  → recheck the selected room's price and availability
+  → create the booking only after your explicit confirmation
+  → pay, query, or cancel the order when requested
+```
+
+The price shown during the initial hotel search is only a candidate signal. Prices presented for comparison come from matching live room products, and the final booking uses the latest rate returned by the availability check.
+
+## Privacy, booking, and payment
+
+- Public hotel discovery and live-rate comparison do not require a sign-in.
+- Order operations use the `user_key` stored locally in `user_key.txt`; keep it out of prompts, screenshots, logs, URLs, commits, and issue reports.
+- Hotel Booking AI asks for the guest's full legal name and a contact email only when a confirmed booking is about to be created. It does not collect a phone number.
+- Booking, cancellation, and payment are explicit actions. The agent must show the relevant details and wait for your confirmation before proceeding.
+- TourMind room prices include taxes. A small number of destinations may require the hotel to collect a city or tourism tax at check-in; any returned mandatory fee is shown separately.
+- Stripe adds a 3.5% payment-processing fee when selected. WeChat Pay and Alipay are also supported.
+- Read-only hotel-result links can display hotel and room information but cannot book, pay, cancel, or access account and finance pages.
+- If a stored key becomes invalid, remove `user_key.txt`, sign in again, and save the new key locally.
+
+## Choose the right TourMind integration
+
+| Audience | Integration | Authentication model | Product and repository |
 |---|---|---|---|
-| Consumer / ToC | Direct HTTP Skill | Public search and availability; `user_key` only for order operations | **[Hotel Booking AI](https://github.com/tourmind-com/Hotel-Booking-AI)** |
-| Business / ToB | Direct HTTP Skill | Skill Token required for every API call | [TourMind Booking Skill](https://github.com/tourmind-com/Tourmind-Booking-Skillss) |
+| Consumer / ToC | Direct HTTP Skill | Public search and availability; `user_key` only for order operations | **[Hotel-booking-ai](https://github.com/tourmind-com/Hotel-Booking-AI)** |
+| Business / ToB | Direct HTTP Skill | Skill Token required for every API call | [Tourmind-booking-skill](https://github.com/tourmind-com/Tourmind-Booking-Skills) |
 | Consumer / ToC | MCP package + companion Skill | Public MCP connection; `user_key` only for order operations | [Hotel Booking AI MCP](https://github.com/tourmind-com/Hotel-Booking-AI-MCP) |
 | Business / ToB | MCP package + companion Skill | Bearer-authenticated MCP connection | [TourMind Booking MCP](https://github.com/tourmind-com/Tourmind-Booking-MCP) |
+
+## API and support
+
+**API base URL:** `https://api.tourmind.com`
+
+| Endpoint | Purpose | Sign-in required |
+|---|---|---|
+| `POST /skill/toc/check_skill_update` | Check for a Skill update | No |
+| `POST /skill/toc/search_location` | Resolve a region, point of interest, or hotel | No |
+| `POST /skill/toc/search_hotels` | Search hotel candidates | No |
+| `POST /skill/toc/get_hotel_detail` | Get hotel details and images | No |
+| `POST /skill/toc/query_room_rates` | Get live rooms and rates | No |
+| `POST /skill/toc/check_room_availability` | Recheck the selected rate and inventory | No |
+| `POST /skill/toc/create_booking` | Create a booking after confirmation | Yes |
+| `POST /skill/toc/query_booking` | Query an order | Yes |
+| `POST /skill/toc/cancel_booking` | Cancel an eligible order after confirmation | Yes |
+| `POST /skill/toc/pay_order` | Start payment after confirmation | Yes |
+
+- Request fields, response contracts, ranking, images, taxes, and booking rules: [references/parameter_guide.md](references/parameter_guide.md)
+- Install from ClawHub: [Hotel Booking AI](https://clawhub.ai/tourmind/skills/hotel-booking-ai)
+- GitHub support: [open an issue](https://github.com/tourmind-com/Hotel-Booking-AI/issues)
+- TourMind customer service: `+86-755 3665 4666`
+- Hotel support: `hotel@tourmind.com`
+
+## License
+
+[MIT](LICENSE) © 2026 TourMind
