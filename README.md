@@ -18,9 +18,9 @@
 <br />
 
 <div align="center">
-  <a href="https://clawhub.ai/tourmind/skills/hotel-booking-ai">Install from ClawHub</a> |
-  <a href="https://github.com/tourmind-com/Hotel-Booking-AI">GitHub</a> |
-  <a href="https://tourmind.com">TourMind</a>
+  <a href="https://tourmind.com/skills">Product Page</a> |
+  <span>Live Demo</span> |
+  <a href="https://tourmind.com">Company</a>
 </div>
 
 <br />
