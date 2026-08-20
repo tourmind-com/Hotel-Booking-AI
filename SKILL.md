@@ -1,7 +1,7 @@
 ---
 name: hotel-booking-ai
 description: >
-  Search and book hotels with live room rates and real-time availability. Use for any hotel or accommodation request: compare properties, rooms, amenities, meals, prices, and cancellation policies; verify rates; create reservations; manage or cancel orders; and pay by Stripe, WeChat Pay, or Alipay.
+  Hotel search, comparison, and booking with live room rates and real-time availability. Use for any hotel or accommodation request, including nearby hotels, recommendations, room details, prices, amenities, cancellation policies, rate verification, reservations, order management, and payment.
 metadata: {"openclaw": {"emoji": "🏨", "primaryEnv": "user_key.txt"}}
 ---
 
