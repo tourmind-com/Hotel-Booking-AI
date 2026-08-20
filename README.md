@@ -218,6 +218,7 @@ The price shown during the initial hotel search is only a candidate signal. Pric
 - GitHub support: [open an issue](https://github.com/tourmind-com/Hotel-Booking-AI/issues)
 - TourMind customer service: `+86-755 3665 4666`
 - Hotel support: `hotel@tourmind.com`
+- AI product cooperation: `ai@tourmind.com`
 
 ## License
 
