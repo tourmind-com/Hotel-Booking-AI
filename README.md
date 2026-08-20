@@ -25,7 +25,7 @@
 
 <br />
 
-[![ClawHub](https://img.shields.io/badge/ClawHub-Hotel--booking--ai-F97316)](https://clawhub.ai/tourmind/skills/hotel-booking-ai)
+[![ClawHub downloads](https://img.shields.io/badge/ClawHub_downloads-1.6k-F97316)](https://clawhub.ai/tourmind/skills/hotel-booking-ai)
 [![Skill version](https://img.shields.io/badge/Skill_version-1.0.5-2563EB)](SKILL.md)
 [![License](https://img.shields.io/github/license/tourmind-com/Hotel-Booking-AI)](LICENSE)
 
