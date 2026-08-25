@@ -33,6 +33,15 @@
 
 <br />
 
+<div align="center">
+  <a href="README.md">English</a> |
+  <a href="README.zh-CN.md">简体中文</a> |
+  <a href="README.ja.md">日本語</a> |
+  <a href="README.es.md">Español</a>
+</div>
+
+<br />
+
 Turn your AI agent into a personal hotel booking assistant. Hotel Booking AI searches hotels worldwide, compares live room prices from leading OTAs and hotel suppliers, shows photos and cancellation terms, verifies the final rate, and helps you complete booking, payment, cancellation, and order lookup in one conversation.
 
 Hotel search, room details, live rates, and availability checks are public—no account or sign-in is required until you are ready to book.
