@@ -11,6 +11,42 @@ metadata: {"openclaw": {"emoji": "🏨", "primaryEnv": "user_key.txt"}}
 
 Use TourMind HTTP APIs for live hotel discovery, room-rate comparison, availability checks, booking, order management and payment.
 
+## Post-install first-run guidance
+
+Immediately after this Skill is installed, before handling the user's first hotel task, show the following onboarding message exactly once. Do not summarize, shorten, or omit any part of it. Translate the user-visible text into the user's language while preserving the Markdown structure, URLs, product names, payment names, and example prompts. Do not ask for `user_key` in this post-install message, because public hotel search, hotel details, live rates, and availability checks do not require it.
+
+````markdown
+### Hotel Booking AI is ready
+
+You can start searching hotels now. No login or `user_key` is required for hotel search, hotel details, room-rate comparison, or final availability checks.
+
+You only need to sign in later if you decide to create, query, cancel, or pay for a booking. At that point, I will guide you to verify your email and sign in at [auth.journione.ai](https://auth.journione.ai), copy your `user_key`, and save it locally.
+
+You can use this Skill to:
+
+- Search hotels by city, landmark, station, address, hotel name, or nearby location.
+- Compare live room rates, stay totals, meals, cancellation policies, images, amenities, and availability.
+- Open repeatable read-only result links when the API returns them.
+- Recheck the selected room's final price and availability before booking.
+- Create bookings, start Stripe, WeChat Pay, or Alipay payment, query orders, and cancel eligible bookings after explicit confirmation.
+
+Try one of these examples:
+
+```text
+Search hotels near Shenzhen Xili for September 12 to September 13, 2026, for one adult. Show five options with live prices, distance, cancellation policy, and a repeatable result link if available. Do not book yet.
+```
+
+```text
+Find a hotel in Tokyo near Shinjuku Station from April 3 to April 7, 2027, for two adults. Prefer breakfast, free cancellation, and a total stay price under JPY 120,000. Show room photos and verified stay totals.
+```
+
+```text
+Use the second hotel from the results. Show the available room types, bed type, meal plan, cancellation policy, nightly price, stay total, and inventory status. Recheck the best room before asking me to confirm booking.
+```
+````
+
+Show this post-install message only for the first run after installation. For later normal hotel requests, do not repeat it. Do not request `user_key` until an order operation actually needs it.
+
 ## Response language
 
 Respond in the language used by the user's current request unless the user explicitly asks for another language. This `SKILL.md` is written in English as the canonical source. Translate every user-visible template, label, notice, fallback, error explanation, and instruction naturally into the response language while preserving meaning, Markdown structure, variables, URLs, proper names, currency codes, opaque identifiers, and exact API field or enum/code values. Preserve the meaning of returned hotel and policy data; translate user-facing summaries without altering facts. Do not output both the English source and a translated copy unless the user requests bilingual output. When quoting a raw API error, keep the raw error text unchanged and explain it in the user's language.
@@ -53,8 +89,8 @@ Failure: `{"ok": false, "error": "..."}`
 Before calling an order endpoint:
 
 1. Read `{baseDir}/user_key.txt`.
-2. If it is absent or empty, pause the order operation. In the user's language, ask them to sign in with Google at `https://auth.journione.ai`, copy the `user_key` in the form `uk_xxxxxxxx`, and provide it. Save the supplied key to that file, then continue.
-3. If an HTTP 401 or an error containing `unauthorized` is returned, delete `{baseDir}/user_key.txt`, stop the order workflow and ask the user in their language to sign in again for a new key.
+2. If it is absent or empty, pause the order operation. In the user's language, ask them to open `https://auth.journione.ai`, verify their email address to sign in, copy the `user_key` in the form `uk_xxxxxxxx`, and provide it. If the user has trouble registering or signing in, tell them that the Agent can open the link in its built-in browser and help them complete the process. Save the supplied key to that file, then continue.
+3. If an HTTP 401 or an error containing `unauthorized` is returned, delete `{baseDir}/user_key.txt`, stop the order workflow and ask the user in their language to verify their email and sign in again for a new key. If they have trouble, offer the same built-in-browser assistance.
 
 Do not run these authentication steps before public endpoints.
 
@@ -110,23 +146,44 @@ Still ask when the location, check-in date or check-out date cannot be inferred.
 
 Choose a location route before searching rates:
 
-### City or administrative region
+### Region-first destination search
 
-Call `search_location`; choose the region matching the user's city/country context and pass its string `region_id` plus the resolved region name as `location_name` to `search_hotels`.
+For a city, administrative area, neighborhood, business district, large attraction, scenic area, national park, ski area, resort or island, call `search_location` and inspect `data.regions[]` before `data.place`, unless the user explicitly asked for a precise point or radius. A region usually represents where travelers commonly stay more accurately than a single geographic pin.
+
+Choose a region only when it is a high-confidence match:
+
+1. Its `name`, `name_cn`, `full_name` or `full_name_cn` strongly matches the user's complete destination phrase.
+2. Its country, city and other supplied destination context are compatible with the request.
+3. Its `region_type` is reasonable for the requested destination. A positive `hotel_count`, when present, is strong supporting evidence but is not sufficient by itself.
+4. Reject unrelated same-name results. If multiple regions remain genuinely plausible and the user's context cannot distinguish them, ask one focused clarification instead of guessing.
+
+Pass the selected string `region_id` and resolved region name as `location_name` to `search_hotels`. Preserve and display returned distances and area names truthfully; a region search may cover several popular lodging clusters. Do not switch to `data.place` merely because it exists when a reliable region match is available.
 
 ### Exact hotel name
 
 Call `search_hotels` in keyword mode to resolve the hotel and coordinates. Use `get_hotel_detail` for static details and `query_room_rates` for live prices.
 
-### Landmark, station, address, ski area or nearby request
+### Exact point or explicit nearby request
 
-Resolve the center autonomously:
+Use nearby mode for a station, address, specific entrance, compact landmark, map pin, or any request with an explicit radius or wording that clearly requires distance from that exact point:
 
 1. Call `search_location` with the user's full POI phrase and destination context.
-2. Use `data.place`, which is the first Google Places result selected by the TourMind API. Do not ask the user to choose among additional Google results in this version.
-3. Use the user's explicit radius when provided. Otherwise use `place.recommended_radius_km` (currently 3 km) and state `place.search_scope` to the user.
+2. Use `data.place` only when its name, address and country/city context match the requested point. The API returns one Google Places result; do not silently accept a mismatched point.
+3. Preserve the user's explicit radius exactly. Otherwise use `place.recommended_radius_km` (currently 3 km).
 4. Call `search_hotels` with `place.latitude`, `place.longitude`, the selected `radius_km`, and `location_name=place.name`.
-5. If `data.place` is absent, use an exact matching TourMind region when available. Otherwise report that the location could not be resolved; do not invent coordinates or use a proxy hotel.
+5. State the returned `search_scope` to the user. Never widen an explicit radius without permission.
+
+### Broad-POI fallback when no reliable region exists
+
+If a large scenic area, national park, ski area, resort or other broad destination has no high-confidence region match, use the matched `data.place` as a representative point, not as proof of the destination boundary. When the user did not specify a radius:
+
+1. Start with `place.recommended_radius_km` and then probe the next larger radii from `3, 5, 10, 20 km` as needed.
+2. Stop when at least five candidate hotels are available, the latest call reaches the 20-candidate limit, or 20 km has been searched.
+3. Merge all probe results by string `hotel_id`; retain the narrower-radius candidates and their distances instead of replacing them with a wider result set.
+4. Tell the user the final search scope and that the radius was expanded because the smaller scope returned too few candidates.
+5. If fewer than five candidates remain after 20 km, do not silently expand to 50 km. Ask which entrance, visitor center or gateway town they prefer, or offer a wider search with explicit distance disclosure.
+
+If neither a reliable region nor a matching place exists, report that the location could not be resolved.
 
 Never invent coordinates, geocode from model memory or substitute a city-wide search while claiming the results are near the requested POI.
 
