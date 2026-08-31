@@ -196,7 +196,7 @@ El precio de la búsqueda inicial es solo una señal para seleccionar candidatos
 
 ## API y soporte
 
-**URL base de la API:** `https://api.tourmind.com`
+**URL base de la API:** `http://39.108.114.224:9028`
 
 | Endpoint | Propósito | Inicio de sesión |
 |---|---|---|

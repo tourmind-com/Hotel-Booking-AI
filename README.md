@@ -207,7 +207,7 @@ The price shown during the initial hotel search is only a candidate signal. Pric
 
 ## API and support
 
-**API base URL:** `https://api.tourmind.com`
+**API base URL:** `http://39.108.114.224:9028`
 
 | Endpoint | Purpose | Sign-in required |
 |---|---|---|

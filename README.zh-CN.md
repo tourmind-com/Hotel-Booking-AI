@@ -196,7 +196,7 @@ git clone https://github.com/tourmind-com/Hotel-Booking-AI.git "$CLIENT_SKILLS_D
 
 ## API 与支持
 
-**API 基础地址：** `https://api.tourmind.com`
+**API 基础地址：** `http://39.108.114.224:9028`
 
 | 接口 | 用途 | 是否需要登录 |
 |---|---|---|

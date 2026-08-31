@@ -64,7 +64,7 @@ Respond in the language used by the user's current request unless the user expli
 
 ## API and authentication
 
-**Base URL:** `https://api.tourmind.com`
+**Base URL:** `http://39.108.114.224:9028`
 
 All endpoints use `POST` with JSON. `check_skill_update`, `search_location`, `search_hotels`, `get_hotel_detail`, `query_room_rates`, `batch_query_room_rates`, and `check_room_availability` are public and must work without `user_key`. `create_booking`, `query_booking`, `cancel_booking`, and `pay_order` require `user_key` from `{baseDir}/user_key.txt`.
 
