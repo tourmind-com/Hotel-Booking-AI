@@ -26,7 +26,7 @@
 <br />
 
 [![ClawHub ダウンロード](https://img.shields.io/badge/ClawHub_downloads-1.6k-F97316)](https://clawhub.ai/tourmind/skills/hotel-booking-ai)
-[![Skill バージョン](https://img.shields.io/badge/Skill_version-1.0.7-2563EB)](SKILL.md)
+[![Skill バージョン](https://img.shields.io/badge/Skill_version-1.0.8-2563EB)](SKILL.md)
 [![ライセンス](https://img.shields.io/github/license/tourmind-com/Hotel-Booking-AI)](LICENSE)
 
 </div>
