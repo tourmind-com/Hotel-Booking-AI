@@ -673,7 +673,7 @@ Before booking, confirm:
 - latest checked total/currency, cancellation policy and availability;
 - hotel `checkin.begin_time` and `checkout.time`, or the localized equivalent of `Not provided by the hotel` if either field is absent;
 - explicit `hotel.fees.mandatory` content, or the localized equivalent of `The hotel did not return any additional mandatory fee information.`;
-- the tax notice and 7×24 TourMind customer-service contact `+86-755 3665 4666`;
+- the tax notice and both TourMind customer service numbers with their hours: **+86-021-67572867** (08:00–23:59 UTC+8) and **+1-833-5504358** (24/7);
 - full legal guest name;
 - mandatory contact email.
 

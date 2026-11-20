@@ -214,7 +214,9 @@ El precio de la búsqueda inicial es solo una señal para seleccionar candidatos
 - Campos, contratos de respuesta, clasificación, imágenes, impuestos y reglas de reserva: [references/parameter_guide.md](references/parameter_guide.md)
 - Instalación desde ClawHub: [Hotel Booking AI](https://clawhub.ai/tourmind/skills/hotel-booking-ai)
 - Soporte en GitHub: [abrir una incidencia](https://github.com/tourmind-com/Hotel-Booking-AI/issues)
-- Atención al cliente de TourMind: `+86-755 3665 4666`
+- Atención al cliente de TourMind:
+  - **+86-021-67572867** — 08:00–23:59 (UTC+8)
+  - **+1-833-5504358** — 24 horas, 7 días a la semana
 - Soporte hotelero: `hotel@tourmind.com`
 - Colaboración en productos de IA: `ai@tourmind.com`
 

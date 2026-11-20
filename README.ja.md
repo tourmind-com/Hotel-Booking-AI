@@ -214,7 +214,9 @@ Skills を再読み込みするか AI クライアントを再起動して、ホ
 - リクエスト項目、レスポンス契約、ランキング、画像、税金、予約ルール：[references/parameter_guide.md](references/parameter_guide.md)
 - ClawHub からインストール：[Hotel Booking AI](https://clawhub.ai/tourmind/skills/hotel-booking-ai)
 - GitHub サポート：[Issue を作成](https://github.com/tourmind-com/Hotel-Booking-AI/issues)
-- TourMind カスタマーサービス：`+86-755 3665 4666`
+- TourMind カスタマーサービス：
+  - **+86-021-67572867** — 08:00–23:59 (UTC+8)
+  - **+1-833-5504358** — 24時間・年中無休
 - ホテルサポート：`hotel@tourmind.com`
 - AI 製品に関する提携：`ai@tourmind.com`
 

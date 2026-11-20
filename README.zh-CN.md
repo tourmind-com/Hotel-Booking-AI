@@ -214,7 +214,9 @@ git clone https://github.com/tourmind-com/Hotel-Booking-AI.git "$CLIENT_SKILLS_D
 - 请求字段、响应契约、排序、图片、税费及预订规则：[references/parameter_guide.md](references/parameter_guide.md)
 - 从 ClawHub 安装：[Hotel Booking AI](https://clawhub.ai/tourmind/skills/hotel-booking-ai)
 - GitHub 支持：[提交 Issue](https://github.com/tourmind-com/Hotel-Booking-AI/issues)
-- TourMind 客服：`+86-755 3665 4666`
+- TourMind 客服：
+  - **+86-021-67572867** — 08:00–23:59 (UTC+8)
+  - **+1-833-5504358** — 每周 7 天、每天 24 小时
 - 酒店业务支持：`hotel@tourmind.com`
 - AI 产品合作：`ai@tourmind.com`
 

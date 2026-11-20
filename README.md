@@ -228,7 +228,9 @@ The initial search price is only a candidate signal. If you decline coupons, lis
 - Request fields, response contracts, ranking, images, taxes, and booking rules: [references/parameter_guide.md](references/parameter_guide.md)
 - Install from ClawHub: [Hotel Booking AI](https://clawhub.ai/tourmind/skills/hotel-booking-ai)
 - GitHub support: [open an issue](https://github.com/tourmind-com/Hotel-Booking-AI/issues)
-- TourMind customer service: `+86-755 3665 4666`
+- TourMind customer service:
+  - **+86-021-67572867** — 08:00–23:59 (UTC+8)
+  - **+1-833-5504358** — 24/7
 - Hotel support: `hotel@tourmind.com`
 - AI product cooperation: `ai@tourmind.com`
 
